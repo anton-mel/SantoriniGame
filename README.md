@@ -3,14 +3,14 @@ OOP Based Santorini Game CLI
 
 just leave your ideas here, or message me
 
-## ChatGPT UML idea + Folder Structure:
+# ChatGPT UML idea + Folder Structure:
 
 Game.py:
 
-## Game
+### Game
 Board.py:
 
-# Board
+### Board
 Cell
 Position
 Player.py:

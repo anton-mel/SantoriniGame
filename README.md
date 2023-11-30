@@ -1,6 +1,6 @@
 # SantoriniGame
 OOP Based Santorini Game CLI <br /> <br />
-
+Team: Oliver & Anton
 
 # Notes: ChatGPT UML idea + Folder Structure:
 

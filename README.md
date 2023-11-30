@@ -2,7 +2,7 @@
 OOP Based Santorini Game CLI <br /> <br />
 
 
-# ChatGPT UML idea + Folder Structure:
+# Notes: ChatGPT UML idea + Folder Structure:
 
 Game.py:
 

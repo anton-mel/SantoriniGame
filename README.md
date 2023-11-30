@@ -1,8 +1,5 @@
 # SantoriniGame
-OOP Based Santorini Game CLI
-
-<br />
-<br />
+OOP Based Santorini Game CLI <br /> <br />
 
 
 # ChatGPT UML idea + Folder Structure:

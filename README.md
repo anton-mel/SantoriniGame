@@ -15,18 +15,19 @@ Cell
 Position
 Player.py:
 
-# Player
+### Player
 Worker
 Move.py:
 
-# Move
+### Move
 Direction
 History.py:
 
-# History
+### History
 CommandPattern.py:
 
-# Game Class:
+# Detailed
+### Game Class:
 
 Responsibilities:
 
@@ -44,7 +45,7 @@ startGame()
 playTurn()
 checkWinCondition()
 
-# Board Class:
+### Board Class:
 
 Responsibilities:
 
@@ -60,7 +61,7 @@ moveWorker(worker: Worker, direction: Direction)
 buildLevel(worker: Worker, direction: Direction)
 isMoveValid(worker: Worker, direction: Direction)
 
-# Player Class:
+### Player Class:
 
 Responsibilities:
 
@@ -76,7 +77,7 @@ selectWorker()
 makeMove(worker: Worker, move: Move)
 chooseBuildDirection()
 
-# Worker Class (Player):
+### Worker Class (Player):
 
 Responsibilities:
 
@@ -90,7 +91,7 @@ Methods:
 move(direction: Direction)
 build(direction: Direction)
 
-# Cell Class:
+### Cell Class:
 
 Responsibilities:
 
@@ -100,7 +101,7 @@ Attributes:
 level: int - Represents the level of the building on the cell.
 worker: Worker - Represents the worker on the cell.
 
-# Position Class:
+### Position Class:
 
 Responsibilities:
 
@@ -114,13 +115,12 @@ column: int
 
 Represents the cardinal directions for movement and building.
 
-# Move Class:
+### Move Class:
 
 Responsibilities:
 Represents a player's move.
 Encapsulates the information about which worker to move, the direction to move, and the direction to build.
 
-# History Class (Part of the Pattern) and 
-# Command Pattern (not a class, but a pattern):
+### History Class (Part of the Pattern) and Command Pattern (not a class, but a pattern):
 Originator, Caretaker, Command
 

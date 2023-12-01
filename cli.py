@@ -1,3 +1,9 @@
+# We need at least 4 patterns (non-trivial)
+# Possible Distribution:
+# Memento Pattern (For Command History)
+# Strategy Pattern! 1 part fits (Human/Heuristic)
+# Command Pattern (For )
+# Fctory Method (args passed: human/computer)
 
 import sys
 from game import SantoriniGame, Command, Player
@@ -6,7 +12,6 @@ class SantoriniCLI:
     """Command-line interface."""
 
     def __init__(self, args):
-        # HERE: Should we hold this config here?
         self._white_player = args['white_player']
         self._blue_player = args['blue_player']
         self._undo_redo = args['undo_redo'] == "on"

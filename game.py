@@ -41,7 +41,7 @@ class BluePlayer(Player):
         super().__init__('blue', workers)
 
 
-# Here Command Pattern
+# Here Memento Pattern
 class Command:
     """Class representing a player move."""
 
@@ -62,7 +62,7 @@ class SantoriniGame:
         print(f"Turn: {self.turn}, {self._current.get_color} ({[worker[0] for worker in self._current.get_workers]})")
         self._board.print_board()
 
-    # Command Pattern Caller (Another Class)
+    # Memento (Another Class)
     def execute_command(self, command):
         pass
 

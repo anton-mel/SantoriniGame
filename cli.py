@@ -1,12 +1,14 @@
 # We need at least 4 patterns (non-trivial)
+
 # Possible Distribution:
-# Memento Pattern (For Command History)
-# Strategy Pattern! 1 part fits (Human/Heuristic)
-# Command Pattern (For )
-# Fctory Method (args passed: human/computer)
+# Memento Pattern (For Command History)            -     NOT
+# Strategy Pattern! 1 part fits (Human/Heuristic)  -     NOT
+# Command Pattern (?)                              -     NOT
+# Factory Method (args passed: human/computer)     -     DONE
+
 
 import sys
-from game import SantoriniGame, Command, Player
+from game import SantoriniGame, Command, Player, PlayerFactory
 
 class SantoriniCLI:
     """Command-line interface."""
@@ -17,11 +19,11 @@ class SantoriniCLI:
         self._undo_redo = args['undo_redo'] == "on"
         self._score_display = args['score_display'] == "on"
 
-        # Create players and workers
-        white_workers = [("A", (3, 1)), ("B", (3, 2))]
-        blue_workers = [("Y", (1, 2)), ("Z", (1, 4))]
-        white = Player(self._white_player, white_workers)
-        blue = Player(self._blue_player, blue_workers)
+        # Create players and workers using Factory Method (SetUp Only)
+        white_factory = PlayerFactory.get_factory(self._white_player)
+        blue_factory = PlayerFactory.get_factory(self._blue_player)
+        white = white_factory.create_player('white', [("A", (3, 1)), ("B", (3, 2))])
+        blue = blue_factory.create_player('blue', [("Y", (1, 2)), ("Z", (1, 4))])
         players = [white, blue]
 
         # Create the Game
@@ -29,16 +31,18 @@ class SantoriniCLI:
 
     def run(self):
         """Infinite turn loop."""
-        while True: # change later
+        while True:
             self._game.print_board()
             self._process_turn()
 
     def _process_turn(self):
-        worker_to_move = input("Select a worker to move: ")
-        direction_to_move = input("Select a direction to move (n, ne, e, se, s, sw, w, nw): ")
-        direction_to_build = input("Select a direction to build (n, ne, e, se, s, sw, w, nw): ")
+        m = input("Select a worker to move: ")
+        d = input("Select a direction to move (n, ne, e, se, s, sw, w, nw): ")
+        b = input("Select a direction to build (n, ne, e, se, s, sw, w, nw): ")
 
+        # Strategy Pattern
         command = Command()
+        self._game.execute_command(m, d, b, command)
         # Think about Command Pattern
 
 

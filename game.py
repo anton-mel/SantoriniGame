@@ -1,5 +1,4 @@
 
-from Strategy import Strategy
 from Board import Board
 
 class SantoriniGame:
@@ -10,6 +9,12 @@ class SantoriniGame:
         self._board = Board(self._players[0], players[1])
         self._current = self._players[0]
         self._turn = 1
+
+    def run(self):
+        """Infinite turn loop."""
+        while True:
+            self.print_board()
+            self.execute_command()
     
     def _next(self):
         self._current = self._players[self._turn % 2]
@@ -20,9 +25,8 @@ class SantoriniGame:
         self._board.print_board()
 
     # Memento Pattern Implement Later
-    def execute_command(self, w, d, b):
-        strategy = Strategy(w, d, b)
-        strategy.execute(self._board)
+    def execute_command(self):
+        self._current.execute(self._board)
         self._next()
 
     @property

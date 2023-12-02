@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from Strategy import *
 
 class Worker:
     """Class representing a worker."""
@@ -9,6 +10,10 @@ class Worker:
     @property
     def get_symbol(self):
         return self.symbol
+    
+    @property
+    def get_position(self):
+        return self.position
 
 class WorkerFactory:
     @staticmethod
@@ -37,6 +42,32 @@ class Player(ABC):
     def execute(self, game, move_direction, build_direction):
         raise NotImplementedError
 
+    def select_worker(self):
+        raise NotImplementedError
+
+    def select_direction(self, prompt):
+        raise NotImplementedError
+    
+    def get_move_strategy(self, direction):
+        if direction == "n":
+            return MoveNorthStrategy()
+        elif direction == "ne":
+            return MoveNortheastStrategy()
+        elif direction == "e":
+            return MoveEastStrategy()
+        elif direction == "se":
+            return MoveSoutheastStrategy()
+        elif direction == "s":
+            return MoveSouthStrategy()
+        elif direction == "sw":
+            return MoveSouthwestStrategy()
+        elif direction == "w":
+            return MoveWestStrategy()
+        elif direction == "nw":
+            return MoveNorthwestStrategy()
+        else:
+            raise ValueError(f"Invalid direction: {direction}")
+
     @property
     def get_workers(self):
         return self.workers
@@ -58,16 +89,46 @@ class PlayerFactory:
         else:
             raise ValueError("Invalid player type")
 
+
 class HumanPlayer(Player):
     def __init__(self, color, workers):
         super().__init__(color, workers)
     
-    def execute(self, game, move_direction, build_direction):
-        pass
+    def execute(self, board):
+        selected_worker = self.select_worker()
+        move_direction = self.select_direction("Select a direction to move (n, ne, e, se, s, sw, w, nw): ")
+        build_direction = self.select_direction("Select a direction to build (n, ne, e, se, s, sw, w, nw): ")
+
+        # Strategies Move
+        self.move_strategy = self.get_move_strategy(move_direction)
+        self.move_strategy.execute(board, selected_worker)
+
+
+    def select_worker(self):
+        while True:
+            worker_symbol = input("Select a worker to move: ")
+            # Check here if random
+            for worker in self.workers:
+                if worker.get_symbol == worker_symbol:
+                    return worker
+            print(f"No worker found with symbol {worker_symbol}. Try again.")
+
+    # Build and Move
+    def select_direction(self, prompt):
+        while True:
+            try:
+                direction = input(prompt)
+                valid_directions = ["n", "ne", "e", "se", "s", "sw", "w", "nw"]
+                if direction not in valid_directions:
+                    raise ValueError(f"Invalid direction: {direction}")
+                return direction
+            except ValueError as e:
+                print(f"Error: {e}. Try again.")
 
 class HeuristicPlayer(Player):
     def __init__(self, color, workers):
         super().__init__(color, workers)
     
-    def execute(self):
+    # Implement AI
+    def execute(self, game):
         pass

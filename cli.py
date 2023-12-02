@@ -1,10 +1,3 @@
-# We need at least 4 patterns (non-trivial)
-
-# Possible Distribution:
-# Memento Pattern (For Command History)            -     NOT
-# Strategy Pattern! 1 part fits (Human/Heuristic)  -     NOT
-# Command Pattern (?)                              -     NOT
-# Factory Method (args passed: human/computer)     -     DONE
 
 import sys
 from Game import SantoriniGame
@@ -26,21 +19,6 @@ class SantoriniCLI:
 
         # Create the Game
         self._game = SantoriniGame(players)
-
-
-    def run(self):
-        """Infinite turn loop."""
-        while True:
-            self._game.print_board()
-            self._process_turn()
-
-    def _process_turn(self):
-        m = input("Select a worker to move: ")
-        d = input("Select a direction to move (n, ne, e, se, s, sw, w, nw): ")
-        b = input("Select a direction to build (n, ne, e, se, s, sw, w, nw): ")
-
-        # Strategy Pattern
-        self._game.execute_command(m, d, b)
 
 
 def parse_args():
@@ -74,4 +52,4 @@ if __name__ == "__main__":
 
     # Run & display the game
     cli = SantoriniCLI(args)
-    cli.run()
+    cli._game.run()

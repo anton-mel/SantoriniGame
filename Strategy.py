@@ -1,67 +1,63 @@
 
 from abc import ABC, abstractmethod
-import random
 
-class Strategy(ABC):
+class DirectionStrategy(ABC):
     @abstractmethod
-    def execute(self, game):
+    def execute(self, board, worker):
         pass
 
-class WorkerSelectionStrategy(Strategy):
-    def execute(self, game):
-        raise NotImplementedError
+class MoveNorthStrategy(DirectionStrategy):
+    def execute(self, board, worker):
+        current_position = worker.get_position
+        new_position = (current_position[0] - 1, current_position[1])
 
-class RandomWorkerSelectionStrategy(WorkerSelectionStrategy):
-    def execute(self, game):
-        workers = game.get_all_workers()
-        return random.choice(workers)
+        board._move_worker_to_position(worker, new_position)
 
-class DirectionSelectionStrategy(Strategy):
-    def execute(self):
-        raise NotImplementedError
+class MoveNortheastStrategy(DirectionStrategy):
+    def execute(self, board, worker):
+        current_position = worker.get_position
+        new_position = (current_position[0] - 1, current_position[1] + 1)
 
-class RandomDirectionSelectionStrategy(DirectionSelectionStrategy):
-    def execute(self):
-        directions = ['n', 'ne', 'e', 'se', 's', 'sw', 'w', 'nw']
-        return random.choice(directions)
+        board._move_worker_to_position(worker, new_position)
 
-class MoveStrategy(Strategy):
-    def execute(self, game, worker, direction):
-        game.move_worker(worker, direction)
+class MoveEastStrategy(DirectionStrategy):
+    def execute(self, board, worker):
+        current_position = worker.get_position
+        new_position = (current_position[0], current_position[1] + 1)
 
-class BuildStrategy(Strategy):
-    def execute(self, game, worker, direction):
-        game.build_building(worker, direction)
+        board._move_worker_to_position(worker, new_position)
 
-class SantoriniStrategy:
-    def __init__(self, worker_strategy, move_strategy, build_strategy):
-        self.worker_strategy = worker_strategy
-        self.move_strategy = move_strategy
-        self.build_strategy = build_strategy
+class MoveSoutheastStrategy(DirectionStrategy):
+    def execute(self, board, worker):
+        current_position = worker.get_position
+        new_position = (current_position[0] + 1, current_position[1] + 1)
 
-    def execute_strategy(self, game):
-        worker = self.worker_strategy.execute(game)
-        direction_move = self.move_strategy.execute()
-        direction_build = self.build_strategy.execute()
+        board._move_worker_to_position(worker, new_position)
 
-        try:
-            self.move_strategy.execute(game, worker, direction_move)
-            self.build_strategy.execute(game, worker, direction_build)
-        except Exception as e:
-            print(f"Exception: {e}")
+class MoveSouthStrategy(DirectionStrategy):
+    def execute(self, board, worker):
+        current_position = worker.get_position
+        new_position = (current_position[0] + 1, current_position[1])
 
-# Example Usage
-random_worker_strategy = RandomWorkerSelectionStrategy()
-random_move_strategy = RandomDirectionSelectionStrategy()
-random_build_strategy = RandomDirectionSelectionStrategy()
+        board._move_worker_to_position(worker, new_position)
 
-move_strategy = MoveStrategy()
-build_strategy = BuildStrategy()
+class MoveSouthwestStrategy(DirectionStrategy):
+    def execute(self, board, worker):
+        current_position = worker.get_position
+        new_position = (current_position[0] + 1, current_position[1] - 1)
 
-strategy = SantoriniStrategy(random_worker_strategy, random_move_strategy, random_build_strategy)
+        board._move_worker_to_position(worker, new_position)
 
-class SantoriniCLI:
-    # ... (your existing code)
+class MoveWestStrategy(DirectionStrategy):
+    def execute(self, board, worker):
+        current_position = worker.get_position
+        new_position = (current_position[0], current_position[1] - 1)
 
-    def _process_turn(self):
-        strategy.execute_strategy(self._game)
+        board._move_worker_to_position(worker, new_position)
+
+class MoveNorthwestStrategy(DirectionStrategy):
+    def execute(self, board, worker):
+        current_position = worker.get_position
+        new_position = (current_position[0] - 1, current_position[1] - 1)
+
+        board._move_worker_to_position(worker, new_position)

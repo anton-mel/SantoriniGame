@@ -38,8 +38,14 @@ class Board:
     def _move_worker_to_position(self, worker, new_position):
         """Move a worker to a specific position."""
         current_position = worker.get_position
+
+        if not isinstance(self._grid[new_position[0]][new_position[1]][1], list):
+            # Create Exeption
+            raise ValueError
+
         if current_position:
             self._remove_worker_from_cell(current_position)
+            worker.position = new_position
             self._add_worker_to_cell(new_position, worker)
 
     def _build_tower_at_position(self, position):
@@ -49,7 +55,3 @@ class Board:
       
         new_height = current_height + 1
         self._grid[row][col] = (new_height, workers)
-
-    def _get_worker_at_position(self, position):
-        """Get the worker at a specific position."""
-        return (0, self._worker_positions.get(position, None))

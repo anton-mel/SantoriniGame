@@ -5,7 +5,7 @@ class Worker:
     """Class representing a worker."""
     def __init__(self, symbol, default_position):
         self.symbol = symbol
-        self.position = default_position 
+        self._position = default_position 
 
     @property
     def get_symbol(self):
@@ -13,7 +13,15 @@ class Worker:
     
     @property
     def get_position(self):
-        return self.position
+        return self._position
+
+    @property
+    def position(self):
+        return self._position
+
+    @position.setter
+    def position(self, new_position):
+        self._position = new_position
 
 class WorkerFactory:
     @staticmethod
@@ -30,11 +38,11 @@ class WorkerFactory:
 
 class WhiteWorkerFactory(WorkerFactory):
     def create_workers(self):
-        return [Worker("A", (3, 1)), Worker("B", (3, 2))]
+        return [Worker("A", (3, 1)), Worker("B", (3, 3))]
 
 class BlueWorkerFactory(WorkerFactory):
     def create_workers(self):
-        return [Worker("Y", (1, 2)), Worker("Z", (1, 4))]
+        return [Worker("Y", (1, 1)), Worker("Z", (1, 3))]
 
 class Player:
     """Class representing a player."""
@@ -47,18 +55,23 @@ class Player:
                             "s": (1, 0), "sw": (1, -1), "w": (0, -1), "nw": (-1, -1)}
         return direction_deltas[direction]
 
-    def execute(self, board):
+    def _execute(self, board):
         selected_worker = self.select_worker()
-        
-        move_direction = self.select_direction("Select a direction to move (n, ne, e, se, s, sw, w, nw): ")
-        self.execute_strategy(MoveStrategy, move_direction, board, selected_worker)
+       
+        while True:
+            move_direction = self.select_direction("Select a direction to move (n, ne, e, se, s, sw, w, nw): ")
+            try:
+                self._execute_strategy(MoveStrategy, move_direction, board, selected_worker)
+                break
+            except ValueError as e:
+                print(f"This cell is taken")
 
         build_direction = self.select_direction("Select a direction to build (n, ne, e, se, s, sw, w, nw): ")
-        self.execute_strategy(BuildStrategy, build_direction, board, selected_worker)
+        self._execute_strategy(BuildStrategy, build_direction, board, selected_worker)
 
-    def execute_strategy(self, strategy_class, direction, board, worker):
+    def _execute_strategy(self, strategy_class, direction, board, worker):
         strategy = strategy_class(self.get_direction_delta(direction))
-        strategy.execute(board, worker)
+        strategy._execute(board, worker)
 
     def select_worker(self):
         while True:
@@ -104,8 +117,8 @@ class HumanPlayer(Player):
     def __init__(self, color, workers):
         super().__init__(color, workers)
     
-    def execute(self, board):
-        super().execute(board)
+    def _execute(self, board):
+        super()._execute(board)
 
     def select_worker(self):
         return super().select_worker()
@@ -117,5 +130,5 @@ class HeuristicPlayer(Player):
     def __init__(self, color, workers):
         super().__init__(color, workers)
     
-    def execute(self, game):
+    def _execute(self, game):
         pass

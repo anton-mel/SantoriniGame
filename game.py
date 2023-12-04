@@ -14,7 +14,7 @@ class SantoriniGame:
         """Infinite turn loop."""
         while True:
             self.print_board()
-            self.execute_command()
+            self._execute_command()
     
     def _next(self):
         self._current = self._players[self._turn % 2]
@@ -25,8 +25,8 @@ class SantoriniGame:
         self._board.print_board()
 
     # Memento Pattern Implement Later
-    def execute_command(self):
-        self._current.execute(self._board)
+    def _execute_command(self):
+        self._current._execute(self._board)
         self._next()
 
     @property

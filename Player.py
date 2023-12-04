@@ -1,5 +1,5 @@
-from abc import ABC, abstractmethod
-from Strategy import *
+
+from Strategy import MoveStrategy, BuildStrategy
 
 class Worker:
     """Class representing a worker."""
@@ -18,12 +18,15 @@ class Worker:
 class WorkerFactory:
     @staticmethod
     def get_factory(color):
-        if color == "white":
-            return WhiteWorkerFactory()
-        elif color == "blue":
-            return BlueWorkerFactory()
+        factories = {"white": WhiteWorkerFactory, "blue": BlueWorkerFactory}
+        factory_class = factories.get(color)
+        if factory_class:
+            return factory_class()
         else:
             raise ValueError("Invalid player type")
+
+    def create_workers(self):
+        raise NotImplementedError
 
 class WhiteWorkerFactory(WorkerFactory):
     def create_workers(self):
@@ -33,40 +36,48 @@ class BlueWorkerFactory(WorkerFactory):
     def create_workers(self):
         return [Worker("Y", (1, 2)), Worker("Z", (1, 4))]
 
-class Player(ABC):
+class Player:
     """Class representing a player."""
     def __init__(self, color, workers):
         self.color = color
         self.workers = workers
 
-    def execute(self, game, move_direction, build_direction):
-        raise NotImplementedError
+    def get_direction_delta(self, direction):
+        direction_deltas = {"n": (-1, 0), "ne": (-1, 1), "e": (0, 1), "se": (1, 1),
+                            "s": (1, 0), "sw": (1, -1), "w": (0, -1), "nw": (-1, -1)}
+        return direction_deltas[direction]
+
+    def execute(self, board):
+        selected_worker = self.select_worker()
+        
+        move_direction = self.select_direction("Select a direction to move (n, ne, e, se, s, sw, w, nw): ")
+        self.execute_strategy(MoveStrategy, move_direction, board, selected_worker)
+
+        build_direction = self.select_direction("Select a direction to build (n, ne, e, se, s, sw, w, nw): ")
+        self.execute_strategy(BuildStrategy, build_direction, board, selected_worker)
+
+    def execute_strategy(self, strategy_class, direction, board, worker):
+        strategy = strategy_class(self.get_direction_delta(direction))
+        strategy.execute(board, worker)
 
     def select_worker(self):
-        raise NotImplementedError
+        while True:
+            worker_symbol = input("Select a worker to move: ")
+            for worker in self.workers:
+                if worker.get_symbol == worker_symbol:
+                    return worker
+            print(f"No worker found with symbol {worker_symbol}. Try again.")
 
     def select_direction(self, prompt):
-        raise NotImplementedError
-    
-    def get_move_strategy(self, direction):
-        if direction == "n":
-            return MoveNorthStrategy()
-        elif direction == "ne":
-            return MoveNortheastStrategy()
-        elif direction == "e":
-            return MoveEastStrategy()
-        elif direction == "se":
-            return MoveSoutheastStrategy()
-        elif direction == "s":
-            return MoveSouthStrategy()
-        elif direction == "sw":
-            return MoveSouthwestStrategy()
-        elif direction == "w":
-            return MoveWestStrategy()
-        elif direction == "nw":
-            return MoveNorthwestStrategy()
-        else:
-            raise ValueError(f"Invalid direction: {direction}")
+        while True:
+            try:
+                direction = input(prompt)
+                valid_directions = ["n", "ne", "e", "se", "s", "sw", "w", "nw"]
+                if direction not in valid_directions:
+                    raise ValueError(f"Invalid direction: {direction}")
+                return direction
+            except ValueError as e:
+                print(f"Error: {e}. Try again.")
 
     @property
     def get_workers(self):
@@ -82,53 +93,29 @@ class PlayerFactory:
         worker_factory = WorkerFactory.get_factory(color)
         workers = worker_factory.create_workers()
 
-        if player_type == "human":
-            return HumanPlayer(color, workers)
-        elif player_type == "heuristic":
-            return HeuristicPlayer(color, workers)
+        player_types = {"human": HumanPlayer, "heuristic": HeuristicPlayer}
+        player_class = player_types.get(player_type)
+        if player_class:
+            return player_class(color, workers)
         else:
             raise ValueError("Invalid player type")
-
 
 class HumanPlayer(Player):
     def __init__(self, color, workers):
         super().__init__(color, workers)
     
     def execute(self, board):
-        selected_worker = self.select_worker()
-        move_direction = self.select_direction("Select a direction to move (n, ne, e, se, s, sw, w, nw): ")
-        build_direction = self.select_direction("Select a direction to build (n, ne, e, se, s, sw, w, nw): ")
-
-        # Strategies Move
-        self.move_strategy = self.get_move_strategy(move_direction)
-        self.move_strategy.execute(board, selected_worker)
-
+        super().execute(board)
 
     def select_worker(self):
-        while True:
-            worker_symbol = input("Select a worker to move: ")
-            # Check here if random
-            for worker in self.workers:
-                if worker.get_symbol == worker_symbol:
-                    return worker
-            print(f"No worker found with symbol {worker_symbol}. Try again.")
+        return super().select_worker()
 
-    # Build and Move
     def select_direction(self, prompt):
-        while True:
-            try:
-                direction = input(prompt)
-                valid_directions = ["n", "ne", "e", "se", "s", "sw", "w", "nw"]
-                if direction not in valid_directions:
-                    raise ValueError(f"Invalid direction: {direction}")
-                return direction
-            except ValueError as e:
-                print(f"Error: {e}. Try again.")
+        return super().select_direction(prompt)
 
 class HeuristicPlayer(Player):
     def __init__(self, color, workers):
         super().__init__(color, workers)
     
-    # Implement AI
     def execute(self, game):
         pass

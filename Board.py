@@ -42,6 +42,14 @@ class Board:
             self._remove_worker_from_cell(current_position)
             self._add_worker_to_cell(new_position, worker)
 
+    def _build_tower_at_position(self, position):
+        """Build a tower at a specific position."""
+        row, col = position
+        current_height, workers = self._grid[row][col]
+      
+        new_height = current_height + 1
+        self._grid[row][col] = (new_height, workers)
+
     def _get_worker_at_position(self, position):
         """Get the worker at a specific position."""
         return (0, self._worker_positions.get(position, None))

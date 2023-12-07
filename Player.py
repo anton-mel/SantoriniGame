@@ -1,6 +1,5 @@
 from Strategy import MoveStrategy, BuildStrategy
 
-
 class Worker:
     """Class representing a worker."""
 
@@ -37,20 +36,24 @@ class WorkerFactory:
 
 class WhiteWorkerFactory:
     def create_workers(self):
-        return [Worker("A", (3, 1)), Worker("B", (3, 3))]
+        return [Worker("A", (3, 1)), Worker("B", (1, 3))]
 
 
 class BlueWorkerFactory:
     def create_workers(self):
-        return [Worker("Y", (1, 1)), Worker("Z", (1, 3))]
+        return [Worker("Y", (1, 1)), Worker("Z", (3, 3))]
 
 
 class Player:
     """Class representing a player."""
 
-    def __init__(self, color, workers):
+    def __init__(self, color, workers, board):
         self.color = color
         self.workers = workers
+
+        # Implement Strategy List
+        self.strategy = MoveStrategy(board)
+        self.build_strategy = BuildStrategy(board)
 
     def get_direction_delta(self, direction):
         direction_deltas = {
@@ -65,35 +68,25 @@ class Player:
         }
         return direction_deltas[direction]
 
-    def _execute(self, board):
+    # This May Be In the Separate Class (Strategy Caretaker)
+    def _execute_strategy(self, strategy, direction, worker):
+        delta = self.get_direction_delta(direction)
+        strategy._execute(worker, delta)
+
+    def _execute(self):
         selected_worker = self.select_worker()
 
-        while True:
-            move_direction = self.select_direction(
-                "Select a direction to move (n, ne, e, se, s, sw, w, nw): "
-            )
-            try:
-                self._execute_strategy(
-                    MoveStrategy, move_direction, board, selected_worker
-                )
-                break
-            except ValueError as e:
-                print(f"This cell is taken")
+        move_direction = self.select_direction("Select a direction to move (n, ne, e, se, s, sw, w, nw): ")
+        self._execute_strategy(self.strategy, move_direction, selected_worker)
 
-        build_direction = self.select_direction(
-            "Select a direction to build (n, ne, e, se, s, sw, w, nw): "
-        )
-        self._execute_strategy(BuildStrategy, build_direction, board, selected_worker)
-
-    def _execute_strategy(self, strategy_class, direction, board, worker):
-        strategy = strategy_class(self.get_direction_delta(direction))
-        strategy._execute(board, worker)
+        build_direction = self.select_direction("Select a direction to build (n, ne, e, se, s, sw, w, nw): ")
+        self._execute_strategy(self.build_strategy, build_direction, selected_worker)
 
     def select_worker(self):
         while True:
             worker_symbol = input("Select a worker to move: ")
             for worker in self.workers:
-                if worker.get_symbol == worker_symbol:
+                if worker.symbol == worker_symbol:
                     return worker
             print(f"No worker found with symbol {worker_symbol}. Try again.")
 
@@ -120,7 +113,7 @@ class Player:
         return self.color
 
     def worker_string(self):
-        return "(" + str(self.workers[0]) + str(self.workers[1]) + ")"
+        return str(self.workers[0]) + str(self.workers[1])
 
     def get_worker_at(self, pos):
         if self.workers[0].position == pos:
@@ -134,24 +127,24 @@ class Player:
 
 class PlayerFactory:
     @staticmethod
-    def get_factory(color, player_type):
+    def get_factory(color, player_type, board):
         worker_factory = WorkerFactory.get_factory(color)
         workers = worker_factory.create_workers()
 
         player_types = {"human": HumanPlayer, "heuristic": HeuristicPlayer}
         player_class = player_types.get(player_type)
         if player_class:
-            return player_class(color, workers)
+            return player_class(color, workers, board)
         else:
             raise ValueError("Invalid player type")
 
 
 class HumanPlayer(Player):
-    def __init__(self, color, workers):
-        super().__init__(color, workers)
+    def __init__(self, color, workers, board):
+        super().__init__(color, workers, board)
 
-    def _execute(self, board):
-        super()._execute(board)
+    def _execute(self):
+        super()._execute()
 
     def select_worker(self):
         return super().select_worker()
@@ -164,5 +157,5 @@ class HeuristicPlayer(Player):
     def __init__(self, color, workers):
         super().__init__(color, workers)
 
-    def _execute(self, game):
+    def _execute(self):
         pass

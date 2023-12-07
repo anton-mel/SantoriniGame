@@ -2,32 +2,37 @@ from abc import ABC, abstractmethod
 
 
 class DirectionStrategy(ABC):
+    def __init__(self, board):
+        self._board = board
+
     @abstractmethod
-    def _execute(self, board, worker):
+    def _execute(self, worker):
         pass
 
-
 class MoveStrategy(DirectionStrategy):
-    def __init__(self, move_delta):
-        self.move_delta = move_delta
+    def __init__(self, board):
+        super().__init__(board)
 
-    def _execute(self, board, worker):
-        current_position = worker.get_position
+    def _execute(self, worker, delta):
+        print(delta)
+        current_position = worker.position
         new_position = (
-            current_position[0] + self.move_delta[0],
-            current_position[1] + self.move_delta[1],
+            current_position[0] + delta[0],
+            current_position[1] + delta[1],
         )
-        board._move_worker_to_position(worker, new_position)
 
+        worker.position = new_position
 
 class BuildStrategy(DirectionStrategy):
-    def __init__(self, build_delta):
-        self.build_delta = build_delta
+    def __init__(self, board):
+        super().__init__(board)
 
-    def _execute(self, board, worker):
-        current_position = worker.get_position
+    def _execute(self, worker, delta):
+        print(delta)
+        current_position = worker.position
         new_position = (
-            current_position[0] + self.build_delta[0],
-            current_position[1] + self.build_delta[1],
+            current_position[0] + delta[0],
+            current_position[1] + delta[1],
         )
-        board._build_tower_at_position(new_position)
+        
+        self._board.build(new_position)

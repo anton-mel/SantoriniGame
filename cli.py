@@ -1,21 +1,15 @@
-# We need at least 4 patterns (non-trivial)
-
-# Possible Distribution:
 # Memento Pattern (For Command History)            -     NOT
-# Strategy Pattern! 1 part fits (Human/Heuristic)  -     NOT
-# Command Pattern (?)                              -     NOT
+# Strategy Pattern! 1 part fits (Human/Heuristic)  -     DONE
+# Iterator Pattern                                 -     DONE
 # Factory Method (args passed: human/computer)     -     DONE
 
 import sys
-from game import SantoriniGame
-from Player import Player, PlayerFactory
-
 
 class SantoriniCLI:
     """Command-line interface."""
 
-    def __init__(self, game) -> None:
-        self.game = game
+    def __init__(self) -> None:
+        pass
 
     def get_move(self):
         return input("Select a worker to move: ")
@@ -39,7 +33,6 @@ class SantoriniCLI:
         print(f"{winner} has won")
         if input("Play Again?\n") != "yes":
             exit(0)
-
 
 def parse_args():
     args = sys.argv[1:]

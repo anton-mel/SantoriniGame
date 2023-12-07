@@ -1,5 +1,4 @@
 from Strategy import MoveStrategy, BuildStrategy
-from Strategy import *
 
 
 class Worker:
@@ -139,12 +138,10 @@ class PlayerFactory:
         worker_factory = WorkerFactory.get_factory(color)
         workers = worker_factory.create_workers()
 
-        if player_type == "human":
-            return HumanPlayer(color, workers)
-        elif player_type == "heuristic":
-            return HeuristicPlayer(color, workers)
-        elif player_type == "random":
-            return RandomPlayer(color, workers)
+        player_types = {"human": HumanPlayer, "heuristic": HeuristicPlayer}
+        player_class = player_types.get(player_type)
+        if player_class:
+            return player_class(color, workers)
         else:
             raise ValueError("Invalid player type")
 
@@ -153,54 +150,19 @@ class HumanPlayer(Player):
     def __init__(self, color, workers):
         super().__init__(color, workers)
 
-    def execute(self, board):
-        selected_worker = self.select_worker()
-        move_direction = self.select_direction(
-            "Select a direction to move (n, ne, e, se, s, sw, w, nw): "
-        )
-        build_direction = self.select_direction(
-            "Select a direction to build (n, ne, e, se, s, sw, w, nw): "
-        )
-
-        # Strategies Move
-        self.move_strategy = self.get_move_strategy(move_direction)
-        self.move_strategy.execute(board, selected_worker)
+    def _execute(self, board):
+        super()._execute(board)
 
     def select_worker(self):
-        while True:
-            worker_symbol = input("Select a worker to move: ")
-            # Check here if random
-            for worker in self.workers:
-                if worker.get_symbol == worker_symbol:
-                    return worker
-            print(f"No worker found with symbol {worker_symbol}. Try again.")
+        return super().select_worker()
 
-    # Build and Move
     def select_direction(self, prompt):
-        while True:
-            try:
-                direction = input(prompt)
-                valid_directions = ["n", "ne", "e", "se", "s", "sw", "w", "nw"]
-                if direction not in valid_directions:
-                    raise ValueError(f"Invalid direction: {direction}")
-                return direction
-            except ValueError as e:
-                print(f"Error: {e}. Try again.")
+        return super().select_direction(prompt)
 
 
 class HeuristicPlayer(Player):
     def __init__(self, color, workers):
         super().__init__(color, workers)
 
-    # Implement AI
-    def execute(self, game):
-        pass
-
-
-class RandomPlayer(Player):
-    def __init__(self, color, workers):
-        super().__init__(color, workers)
-
-    # Implement AI
-    def execute(self, game):
+    def _execute(self, game):
         pass

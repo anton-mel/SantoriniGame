@@ -34,8 +34,8 @@ class SantoriniGame:
         self._turn += 1
 
     # Memento Pattern Implement Later
-    def execute_command(self):
-        self._current.execute(self._board)
+    def _execute_command(self):
+        self._current._execute(self._board)
         self._next()
 
     @property

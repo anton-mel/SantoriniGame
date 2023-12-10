@@ -1,18 +1,16 @@
 from Board import Board
 from cli import SantoriniCLI, parse_args
 from Player import PlayerFactory
-
+from exceptions import MoveError
 
 class SantoriniGame:
     """Class representing the Santorini game."""
 
     def __init__(self, white, blue, undo_redo, score_display):
-        self._cli = SantoriniCLI()
         self._board = Board()
         
-        # give board to each of the players
-        self._white = PlayerFactory.get_factory("white", white, self._board)
-        self._blue = PlayerFactory.get_factory("blue", blue, self._board)
+        self._white = PlayerFactory.get_factory("white", white)
+        self._blue = PlayerFactory.get_factory("blue", blue)
         
         self._undo_redo = undo_redo
         self._score_display = score_display
@@ -24,7 +22,7 @@ class SantoriniGame:
         """Infinite turn loop."""
         while True:
             self.__repr__()
-            self._cli.print_turn(
+            SantoriniCLI().print_turn(
                 self._turn, str(self._current), self._current.worker_string()
             )
             self._execute_command()
@@ -35,18 +33,21 @@ class SantoriniGame:
 
     # Memento Pattern Implement Later
     def _execute_command(self):
-        self._current._execute()
+        try:
+            self._current._execute(self._board)
+        except MoveError as e:
+            print(f"Cannot {e.move_type} {e.direction}")
         self._next()
 
     @property
     def current(self):
         return self._current
 
-    # maybe we want to generate a grid here and pass it to cli
     def __repr__(self):
-        for i, row in enumerate(self._board):
+        for i in range(self._board.SIZE):
             print("+--+--+--+--+--+")
-            for j, cell in enumerate(row):
+            for j in range(self._board.SIZE):
+                cell = self._board.get_cell((i, j))
                 worker_white = self._white.get_worker_at((i, j))
                 worker_blue = self._blue.get_worker_at((i, j))
                 height = cell.level

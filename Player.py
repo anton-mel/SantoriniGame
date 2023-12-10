@@ -1,4 +1,5 @@
-from Strategy import MoveStrategy, BuildStrategy
+from Strategy import HumanStrategy
+from cli import SantoriniCLI
 
 class Worker:
     """Class representing a worker."""
@@ -47,67 +48,21 @@ class BlueWorkerFactory:
 class Player:
     """Class representing a player."""
 
-    def __init__(self, color, workers, board):
-        self.color = color
-        self.workers = workers
-
-        # Implement Strategy List
-        self.strategy = MoveStrategy(board)
-        self.build_strategy = BuildStrategy(board)
-
-    def get_direction_delta(self, direction):
-        direction_deltas = {
-            "n": (-1, 0),
-            "ne": (-1, 1),
-            "e": (0, 1),
-            "se": (1, 1),
-            "s": (1, 0),
-            "sw": (1, -1),
-            "w": (0, -1),
-            "nw": (-1, -1),
-        }
-        return direction_deltas[direction]
-
-    # This May Be In the Separate Class (Strategy Caretaker)
-    def _execute_strategy(self, strategy, direction, worker):
-        delta = self.get_direction_delta(direction)
-        strategy._execute(worker, delta)
-
-    def _execute(self):
-        selected_worker = self.select_worker()
-
-        move_direction = self.select_direction("Select a direction to move (n, ne, e, se, s, sw, w, nw): ")
-        self._execute_strategy(self.strategy, move_direction, selected_worker)
-
-        build_direction = self.select_direction("Select a direction to build (n, ne, e, se, s, sw, w, nw): ")
-        self._execute_strategy(self.build_strategy, build_direction, selected_worker)
-
-    def select_worker(self):
-        while True:
-            worker_symbol = input("Select a worker to move: ")
-            for worker in self.workers:
-                if worker.symbol == worker_symbol:
-                    return worker
-            print(f"No worker found with symbol {worker_symbol}. Try again.")
-
-    def select_direction(self, prompt):
-        while True:
-            try:
-                direction = input(prompt)
-                valid_directions = ["n", "ne", "e", "se", "s", "sw", "w", "nw"]
-                if direction not in valid_directions:
-                    raise ValueError(f"Invalid direction: {direction}")
-                return direction
-            except ValueError as e:
-                print(f"Error: {e}. Try again.")
+    def __init__(self, color, workers):
+        self._color = color
+        self._workers = workers
 
     @property
-    def worker(self):
-        return self.workers
+    def workers(self):
+        return self._workers
 
     @property
-    def worker(self):
-        return self.color
+    def color(self):
+        return self._color
+    
+    @color.setter
+    def color(self, color):
+        self._color = color
 
     def __repr__(self):
         return self.color
@@ -141,17 +96,13 @@ class PlayerFactory:
 
 class HumanPlayer(Player):
     def __init__(self, color, workers, board):
-        super().__init__(color, workers, board)
+        super().__init__(color, workers)
+
+        # Implement Strategy List
+        self._strategy = HumanStrategy(board)
 
     def _execute(self):
-        super()._execute()
-
-    def select_worker(self):
-        return super().select_worker()
-
-    def select_direction(self, prompt):
-        return super().select_direction(prompt)
-
+        self._strategy(self.workers)
 
 class HeuristicPlayer(Player):
     def __init__(self, color, workers):
@@ -159,3 +110,5 @@ class HeuristicPlayer(Player):
 
     def _execute(self):
         pass
+        # super()._execute_move(move_direction, selected_worker)
+        # super()._execute_build(build_direction, selected_worker)

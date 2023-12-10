@@ -1,15 +1,21 @@
-class BoardRowIterator:
-    def __init__(self, grid) -> None:
-        self._grid = grid
-        self._index = 0
+from exceptions import MoveError
+
+class BoardCellIterator:
+    def __init__(self, board) -> None:
+        self._board = board
+        self._row = 0
+        self._col = 0
 
     def __next__(self):
-        if self._index >= 5:
+        if self._row == self._board.SIZE:
             raise StopIteration()
 
-        row = self._grid[self._index]
-        self._index += 1
-        return row
+        cell = self._board.get_cell((self._row, self._col))
+        self._col += 1
+        if self._col == self._board.SIZE:
+            self._col = 0
+            self._row += 1
+        return cell
 
     def __iter__(self):
         return self
@@ -22,25 +28,25 @@ class Board:
     def __init__(self):
         self._grid = [[Cell() for _ in range(self.SIZE)] for _ in range(self.SIZE)]
 
-    def print_board(self):
-        """Print the board."""
-        for row in self:
-            print("+--+--+--+--+--+")
-            for cell in row:
-                print(
-                    f"|{cell.level}{cell.worker.symbol if cell.worker else ' '}",
-                    end="",
-                )
-            print("|")
-        print("+--+--+--+--+--+")
-
     def build(self, pos):
         x, y = pos
 
         self._grid[x][y].upgrade()
 
+    def valid_move(self, new_position, direction):
+        if not (0 <= new_position[0] < self.SIZE and 0 <= new_position[1] < self.SIZE):
+            raise MoveError("move", direction)
+
+        new_cell = self.get_cell(new_position)
+        if new_cell.worker is not None:
+            raise MoveError("move", direction)
+    
+    def get_cell(self, pos):
+        x, y = pos
+        return self._grid[x][y]
+
     def __iter__(self):
-        return BoardRowIterator(self._grid)
+        return BoardCellIterator(self)
 
 class Cell:
     def __init__(self, level=0) -> None:

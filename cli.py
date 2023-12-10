@@ -15,7 +15,16 @@ class SantoriniCLI:
         return input("Select a worker to move: ")
 
     def get_direction(self):
-        return input("Select a direction to move (n, ne, e, se, s, sw, w, nw): ")
+        while True:
+            try:
+                direction = input("Select a direction to move (n, ne, e, se, s, sw, w, nw): ")
+                valid_directions = ["n", "ne", "e", "se", "s", "sw", "w", "nw"]
+                if direction not in valid_directions:
+                    raise ValueError(f"Invalid direction: {direction}")
+                return direction
+            except ValueError as e:
+                print(f"Error: {e}. Try again.")
+                
 
     def get_build(self):
         return input("Select a direction to build (n, ne, e, se, s, sw, w, nw): ")

@@ -1,75 +1,48 @@
 from cli import SantoriniCLI
-from exceptions import WorkerError, DirectionError, MoveError
+from exceptions import WorkerError, DirectionError, MoveError, GameOverError
 from DirectionUtils import DirectionUtils
 import random
 
+
 class Strategy:
-    def __init__(self, board, player):
+    def __init__(self, board, possibilities):
         self._board = board
-        self._player = player
-        self._p = {}    
+        self._p = possibilities
 
         self._selected_worker = None
         self._selected_move = None
+        self._move_direction = None
         self._selected_build = None
+        self._build_direction = None
 
-
-    def _update_possibilities(self):
-        self._p = {}
-
-        for worker in self._player.workers:
-            pos = worker.position
-            level = self._board.get_cell(pos).level
-            for move in self._board.get_ring(pos):
-                cell = self._board.get_cell(move)
-                
-                if cell.level > 3:
-                    continue
-
-                if cell.level > level + 1:
-                    continue
-                    
-                if self._board.occupied(move):
-                    continue
-            
-                for build in self._board.get_ring(move):
-                    cell = self._board.get_cell(build)
-
-                    if self._board.occupied(build):
-                        continue
-
-                    if cell.level == 3:
-                        continue
-
-                    if worker.symbol not in self._p:
-                        self._p[worker.symbol] = {}
-                    
-                    if move not in self._p[worker.symbol]:
-                        self._p[worker.symbol][move] = set()
-
-                    self._p[worker.symbol][move].add(build)
-
-    def _get_worker(self):
+    def _get_worker(self, player):
         pass
 
-    def _get_move(self):
+    def _get_move(self, player):
         pass
 
     def _get_build(self):
-        self._selected_build = random.choice(list(self._p.values[self._selected_worker][self._selected_move]))
+        self._selected_build = random.choice(
+            list(self._p[self._selected_worker][self._selected_move])
+        )
+
+        self._build_direction = DirectionUtils.calculate_direction(
+            original=self._selected_move, new=self._selected_build
+        )
 
     def _execute_steps(self):
         self._move(self._selected_move, self._selected_worker)
         self._build(self._selected_build)
 
-    def execute(self):
-        self._update_possibilities()
-
-        self._get_worker()
-        self._get_move()
+    def execute(self, player):
+        print(self._p)
+        self._get_worker(player)
+        self._get_move(player)
         self._get_build()
 
         self._execute_steps()
+
+        return self._selected_worker.symbol, self._move_direction, self._build_direction
 
     def _move(self, position, worker):
         worker.position = position
@@ -79,19 +52,19 @@ class Strategy:
 
 
 class HumanStrategy(Strategy):
-    def _get_worker(self):
+    def _get_worker(self, player):
         while True:
             try:
                 symbol = SantoriniCLI().select_worker()
-                worker = self._player._select_worker(symbol)
+                worker = player._select_worker(symbol)
 
                 if (symbol in self._board.observers) and (not worker):
                     raise WorkerError("That is not your worker")
-                
+
                 if not worker:
                     raise WorkerError("Not a valid worker")
 
-                if symbol not in self._p:
+                if worker not in self._p:
                     raise WorkerError("That worker cannot move")
 
             except WorkerError as e:
@@ -100,30 +73,33 @@ class HumanStrategy(Strategy):
                 self._selected_worker = worker
                 break
 
-    def _get_move(self):
+    def _get_move(self, player):
         while True:
             try:
                 move_direction = SantoriniCLI().get_move()
-                move = self._player._select_worker(self._selected_worker).update_position(move_direction)
-                
-                if move not in self._p[self._selected_worker.symbol]:
+                move = DirectionUtils.move_result(
+                    self._selected_worker.position, move_direction
+                )
+
+                if move not in self._p[self._selected_worker]:
                     raise MoveError("move", move_direction)
-                
+
             except MoveError as e:
                 print(f"Cannot {e.move_type} {e.direction}")
             except DirectionError as e:
                 print(f"{e.mes}")
             else:
                 self._selected_move = move
+                self._move_direction = move_direction
                 break
 
     def _get_build(self):
         while True:
             try:
                 build_direction = SantoriniCLI().get_build()
-                build = self._player._select_worker(self._selected_worker).update_position(build_direction, self._selected_move)
-                
-                if build not in self._p[self._selected_worker.symbol][self._selected_move]:
+                build = DirectionUtils.move_result(self._selected_move, build_direction)
+
+                if build not in self._p[self._selected_worker][self._selected_move]:
                     raise MoveError("build", build_direction)
 
             except MoveError as e:
@@ -132,28 +108,54 @@ class HumanStrategy(Strategy):
                 print(f"{e.mes}")
             else:
                 self._selected_build = build
+                self._build_direction = build_direction
                 break
 
 
-class HeuristicStrategy():
-    def _get_move(self):
+class HeuristicStrategy(Strategy):
+    def _get_move(self, player):
+        best_score = 0
+        best_move = None
         for worker in self._p:
-            for move in self._p[worker.symbol]:
+            for move in self._p[worker]:
                 # get score for move
-                score = None
+                positions = [worker.position for worker in player.workers]
+                height, center, distance = self._board.check_score(
+                    worker.symbol,
+                    move,
+                    positions,
+                )
+
+                move_score = 3 * height + 2 * center + distance
+
+                if self._board.get_cell(move).level == 3:
+                    move_score = 100000
+
+                if move_score > best_score:
+                    best_move = move
+                    best_score = move_score
+                    self._selected_worker = worker
+                elif move_score == best_score:
+                    if bool(random.getrandbits(1)):
+                        best_move = move
+                        best_score = move_score
+                        self._selected_worker = worker
+
+        self._selected_move = best_move
+        self._move_direction = DirectionUtils.calculate_direction(
+            original=self._selected_worker.position, new=self._selected_move
+        )
 
 
-    def _execute_steps(self):
-        for worker in self._p:
-            for move in self._p[worker.symbol]:
-                for build in self._p[worker.symbol][move]:
-                    pass
+class RandomStrategy(Strategy):
+    def _get_worker(self, player):
+        self._selected_worker = random.choice(list(self._p.keys()))
 
+    def _get_move(self, player):
+        x = self._p[self._selected_worker]
 
-class RandomStrategy():
-    def _get_worker(self):
-        self._selected_worker = random.choice(list(self._p.values()))
+        self._selected_move = random.choice(list(x.keys()))
 
-    def _get_move(self):
-        self._selected_move = random.choice(list(self._p_values[self._selected_worker].values()))
-
+        self._move_direction = DirectionUtils.calculate_direction(
+            original=self._selected_worker.position, new=self._selected_move
+        )

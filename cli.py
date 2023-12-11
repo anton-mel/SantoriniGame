@@ -6,6 +6,7 @@
 import sys
 from exceptions import DirectionError
 
+
 class SantoriniCLI:
     """Client Interaction Helper Functions."""
 
@@ -26,7 +27,7 @@ class SantoriniCLI:
     def get_memento(self):
         prompt = "undo, redo, or next\n"
         return input(prompt)
-    
+
     def get_move(self):
         prompt = "Select a direction to move (n, ne, e, se, s, sw, w, nw):\n"
         return self.get_direction(prompt)
@@ -48,6 +49,8 @@ class SantoriniCLI:
         print(f"{winner} has won")
         if input("Play Again?\n") != "yes":
             exit(0)
+        # else:
+
 
 def parse_args():
     args = sys.argv[1:]
@@ -62,9 +65,7 @@ def parse_args():
         else "human"
     )
 
-    undo_redo_enabled = (
-        args[2] if len(args) > 2 and args[2] in ["on", "off"] else "off"
-    )
+    undo_redo_enabled = args[2] if len(args) > 2 and args[2] in ["on", "off"] else "off"
 
     score_display_enabled = (
         args[3] if len(args) > 3 and args[3] in ["on", "off"] else "off"

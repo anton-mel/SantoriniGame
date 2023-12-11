@@ -12,6 +12,7 @@ class GameState:
         self.white_workers = white_workers
         self.blue_workers = blue_workers
 
+
 class Memento(ABC):
     """
     The Memento interface provides a way to retrieve the memento's metadata,
@@ -30,6 +31,7 @@ class Memento(ABC):
     @abstractmethod
     def get_blue_workers(self) -> list:
         pass
+
 
 class Originator:
     # here create a functional to save the game state maybe dictionary
@@ -59,7 +61,6 @@ class Originator:
         print("Originator: I'm doing something important.")
         self._state = GameState(turn, white_pos, blue_pos)
         print(f"Originator: and my state has changed to: {self._state}")
-
 
     def save(self) -> Memento:
         """
@@ -100,7 +101,7 @@ class Caretaker:
 
     def __init__(self, originator: Originator) -> None:
         self._mementos = []
-        self._undone_mementos = [] 
+        self._undone_mementos = []
         self._originator = originator
 
     def backup(self) -> None:

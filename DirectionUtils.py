@@ -12,3 +12,4 @@ class DirectionUtils:
             "nw": (-1, -1),
         }
         return direction_deltas[direction]
+

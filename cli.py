@@ -18,7 +18,7 @@ class SantoriniCLI:
 
     def get_direction(self, prompt):
         while True:
-            try: 
+            try:
                 direction = input(prompt)
                 valid_directions = ["n", "ne", "e", "se", "s", "sw", "w", "nw"]
                 if direction not in valid_directions:
@@ -43,13 +43,16 @@ class SantoriniCLI:
     def print_selection(self):
         raise NotImplementedError()
 
-    def print_board(self):
-        raise NotImplementedError()
+    def print_board(self, board):
+        print(board)
 
-    def print_invalid_move(e):
+    def print_score(self, h_score, c_score, d_score):
+        print(f", ({h_score}, {c_score}, {d_score})", end="")
+
+    def print_invalid_move(self, e):
         print(f"Cannot {e.move_type} {e.direction}")
 
-    def print_worker_error(e):
+    def print_worker_error(self, e):
         print(e.mes)
 
     def print_turn(self, turn, color, workers):

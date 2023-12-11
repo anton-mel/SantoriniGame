@@ -13,29 +13,14 @@ class GridIterator:
     def __iter__(self):
         return self
 
-    # Step-by-step Cell Printing
     def __next__(self):
-        if self._current_row < Board.SIZE:
-            row_result = "+--" * Board.SIZE + "+\n"
-            for j in range(Board.SIZE):
-                cell = self._board.get_cell((self._current_row, j))
-                height = cell.level
-
-                worker_symbol = next(
-                    (
-                        symbol
-                        for symbol, value in self._board.observers.items()
-                        if value == (self._current_row, j)
-                    ),
-                    None,
-                )
-
-                row_result += f"|{height}" + (worker_symbol if worker_symbol else " ")
-            row_result += "|\n"
-            self._current_row += 1
-            return row_result
-        else:
+        if self._current_row >= Board.SIZE:
             raise StopIteration
+
+        row_result = self._board[self._current_row]
+        self._current_row += 1
+
+        return row_result
 
 
 class Board:
@@ -154,7 +139,7 @@ class Board:
 
     # Board Functional
     def __iter__(self):
-        return GridIterator(self)
+        return GridIterator(self._grid)
 
     def build(self, position):
         y, x = position
@@ -169,8 +154,14 @@ class Board:
 
     def __repr__(self):
         output = ""
-        for row in self:
-            output += row
+        for i, row in enumerate(self):
+            output += "+--" * Board.SIZE + "+\n"
+            row_result = ""
+            for j, cell in enumerate(row):
+                height = cell.level
+                worker_symbol = self.occupied((i, j))
+                row_result += f"|{height}" + (worker_symbol if worker_symbol else " ")
+            output += row_result + "|\n"
         output += "+--" * Board.SIZE + "+"
         return output
 

@@ -1,5 +1,6 @@
-
+from cli import SantoriniCLI
 from exceptions import *
+from DirectionUtils import DirectionUtils
 from Strategy import HumanStrategy, HeuristicStrategy, RandomStrategy
 
 
@@ -81,6 +82,9 @@ class Player:
             return self.workers[1]
 
         return None
+
+    def worker_pos(self):
+        return [worker.position for worker in self._workers]
 
     def __repr__(self):
         return self.color

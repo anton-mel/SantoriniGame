@@ -1,5 +1,6 @@
 from exceptions import MoveError
 from DirectionUtils import DirectionUtils
+from Memento import GameState
 
 
 class GridIterator:
@@ -45,10 +46,22 @@ class Board:
     def __init__(self):
         self._grid = [[Cell() for _ in range(self.SIZE)] for _ in range(self.SIZE)]
         self._observers = {}
+        self._state = None
 
     @property
     def observers(self):
         return self._observers
+    
+    @property
+    def state(self):
+        return self._state
+
+    def _update_state(self, turn, white_workers_pos, blue_workers_pos):
+        self._state = GameState(
+            turn,
+            white_workers_pos,
+            blue_workers_pos
+        )
 
     def remove_observer(self, observer):
         self._observers.remove({observer.symbol: observer.position})

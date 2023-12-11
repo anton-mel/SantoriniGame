@@ -7,6 +7,10 @@ class GameState:
         self._blue_workers = blue_workers
     
     @property
+    def turn(self):
+        return self._turn
+
+    @property
     def white_workers(self):
         return self._white_workers
     
@@ -40,7 +44,6 @@ class Memento(ABC):
     @abstractmethod
     def get_blue_workers(self) -> list:
         pass
-
 
 class Originator:
     # here create a functional to save the game state maybe dictionary
@@ -87,7 +90,6 @@ class Originator:
         self._state = memento.get_state()
         print(f"Originator: My state has changed to: {self._state}")
 
-
 class ConcreteMemento(Memento):
     def __init__(self, state: GameState) -> None:
         self._state = state
@@ -100,7 +102,6 @@ class ConcreteMemento(Memento):
 
     def get_blue_workers(self) -> list:
         return self._state.blue_workers
-
 
 class Caretaker:
     """
@@ -148,5 +149,4 @@ class Caretaker:
         for memento in self._mementos:
             print("Blue Workers:", memento.get_blue_workers())
             print("White Workers:", memento.get_white_workers())
-
 

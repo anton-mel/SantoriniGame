@@ -68,7 +68,7 @@ class HumanStrategy(Strategy):
                     raise WorkerError("That worker cannot move")
 
             except WorkerError as e:
-                print(e.mes)
+                SantoriniCLI.print_worker_error(e)
             else:
                 self._selected_worker = worker
                 break
@@ -85,9 +85,7 @@ class HumanStrategy(Strategy):
                     raise MoveError("move", move_direction)
 
             except MoveError as e:
-                print(f"Cannot {e.move_type} {e.direction}")
-            except DirectionError as e:
-                print(f"{e.mes}")
+                SantoriniCLI().print_invalid_move(e)
             else:
                 self._selected_move = move
                 self._move_direction = move_direction
@@ -103,9 +101,7 @@ class HumanStrategy(Strategy):
                     raise MoveError("build", build_direction)
 
             except MoveError as e:
-                print(f"Cannot {e.move_type} {e.direction}")
-            except DirectionError as e:
-                print(f"{e.mes}")
+                SantoriniCLI().print_invalid_move(e)
             else:
                 self._selected_build = build
                 self._build_direction = build_direction

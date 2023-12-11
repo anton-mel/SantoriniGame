@@ -1,8 +1,8 @@
 from Board import Board
 from cli import SantoriniCLI, parse_args  # fix?
 from Player import PlayerFactory
-from exceptions import MoveError, MementoError, GameOverError
-from Memento import Originator, Caretaker
+from exceptions import GameOverError
+from Memento import Originator, Caretaker, GameState
 
 
 class SantoriniGame:
@@ -17,12 +17,15 @@ class SantoriniGame:
         self._undo_redo = undo_redo
         self._score_display = score_display
 
-        if self._undo_redo == "on":
-            self._originator = Originator("Initial State")
-            self._caretaker = Caretaker(self._originator)
-
         self._turn = 1
         self._current = self._white
+
+        self._state = None
+        self._update_state()
+
+        if self._undo_redo == "on":
+            self._originator = Originator(self._state)
+            self._caretaker = Caretaker(self._originator)
 
     def won(self):
         for key, value in self._board.observers.items():
@@ -31,6 +34,13 @@ class SantoriniGame:
                 SantoriniCLI().print_end(self._current.color)
                 return True
         return False
+    
+    def _update_state(self):
+        self._state = GameState(
+            self._turn,
+            [worker.position for worker in self._white.workers],
+            [worker.position for worker in self._blue.workers]
+        )
 
     def memento_display(self):
         while True:
@@ -46,13 +56,16 @@ class SantoriniGame:
     def run(self):
         """Infinite turn loop."""
         while True:
+            self._update_state()
+
             print(self._board)
             SantoriniCLI().print_turn(
                 self._turn, str(self._current), self._current.worker_string()
             )
 
             if self._score_display == "on":
-                h, c, d = self._board.score()
+                positions = [worker.position for worker in self.current.workers]
+                h, c, d = self._board.score(positions)
                 print(f", ({h}, {c}, {d})", end="")
             print(end="\n")
 
@@ -79,6 +92,7 @@ class SantoriniGame:
     def _execute_command(self):
         white_workers_pos = [worker.position for worker in self._white.workers]
         blue_workers_pos = [worker.position for worker in self._blue.workers]
+        current_pos = [worker.position for worker in self._blue.workers]
 
         if self._undo_redo == "on":
             self._caretaker.backup()
@@ -91,7 +105,7 @@ class SantoriniGame:
         symbol, move_direction, build_direction = self._current.execute()
         print(f"{symbol}, {move_direction}, {build_direction}", end="")
         if self._score_display == "on":
-            h, c, d = self._board.score()
+            h, c, d = self._board.score(current_pos)
             print(f", ({h}, {c}, {d})", end="")
         print(end="\n")
 

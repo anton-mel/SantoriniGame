@@ -18,11 +18,15 @@ class SantoriniCLI:
 
     def get_direction(self, prompt):
         while True:
-            direction = input(prompt)
-            valid_directions = ["n", "ne", "e", "se", "s", "sw", "w", "nw"]
-            if direction not in valid_directions:
-                raise DirectionError(f"Not a valid direction")
-            return direction
+            try: 
+                direction = input(prompt)
+                valid_directions = ["n", "ne", "e", "se", "s", "sw", "w", "nw"]
+                if direction not in valid_directions:
+                    raise DirectionError(f"Not a valid direction")
+            except DirectionError as e:
+                print(f"{e.mes}")
+            else:
+                return direction
 
     def get_memento(self):
         prompt = "undo, redo, or next\n"
@@ -41,6 +45,12 @@ class SantoriniCLI:
 
     def print_board(self):
         raise NotImplementedError()
+
+    def print_invalid_move(e):
+        print(f"Cannot {e.move_type} {e.direction}")
+
+    def print_worker_error(e):
+        print(e.mes)
 
     def print_turn(self, turn, color, workers):
         print(f"Turn: {turn}, {color} ({workers})", end="")

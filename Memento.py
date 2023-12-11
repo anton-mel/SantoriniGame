@@ -1,17 +1,26 @@
 from abc import ABC, abstractmethod
 
-# from the website copied
-from datetime import datetime
-from random import sample
-from string import ascii_letters
-
-
 class GameState:
     def __init__(self, turn, white_workers, blue_workers):
         self.turn = turn
-        self.white_workers = white_workers
-        self.blue_workers = blue_workers
-
+        self._white_workers = white_workers
+        self._blue_workers = blue_workers
+    
+    @property
+    def white_workers(self):
+        return self._white_workers
+    
+    @property
+    def blue_workers(self):
+        return self._blue_workers
+    
+    @white_workers.setter
+    def white_workers(self, white_workers):
+        self._white_workers = white_workers
+    
+    @blue_workers.setter
+    def blue_workers(self, blue_workers):
+        self._blue_workers = blue_workers
 
 class Memento(ABC):
     """
@@ -61,6 +70,7 @@ class Originator:
         print("Originator: I'm doing something important.")
         self._state = GameState(turn, white_pos, blue_pos)
         print(f"Originator: and my state has changed to: {self._state}")
+        return self._state  # Ensure to return the updated state
 
     def save(self) -> Memento:
         """
@@ -136,4 +146,7 @@ class Caretaker:
     def show_history(self) -> None:
         print("Caretaker: Here's the list of mementos:")
         for memento in self._mementos:
-            print(memento.get_blue_workers(), " ", momento.get_white_workers)
+            print("Blue Workers:", memento.get_blue_workers())
+            print("White Workers:", memento.get_white_workers())
+
+

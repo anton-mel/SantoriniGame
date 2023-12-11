@@ -1,6 +1,5 @@
-from cli import SantoriniCLI
+
 from exceptions import *
-from DirectionUtils import DirectionUtils
 from Strategy import HumanStrategy, HeuristicStrategy, RandomStrategy
 
 
@@ -124,7 +123,7 @@ class Player:
                     if board.occupied(build) and build != pos:
                         continue
 
-                    if cell.level == 3:
+                    if cell.level > 3:
                         continue
 
                     if worker not in self._p:

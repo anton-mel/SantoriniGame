@@ -26,10 +26,7 @@ class DirectionUtils:
             (-1, -1): "nw",
         }
 
-        try:
-            return delta_dict[delta]
-        except Exception:
-            print("hi")
+        return delta_dict[delta]
 
     def calculate_direction(original, new):
         delta = (new[0] - original[0], new[1] - original[1])

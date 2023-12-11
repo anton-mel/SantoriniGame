@@ -30,5 +30,9 @@ class MementoError(Exception):
         super().__init__()
 
 
-class GameOverError(Exception):
+class Loss(Exception):
+    pass
+
+
+class Win(Exception):
     pass

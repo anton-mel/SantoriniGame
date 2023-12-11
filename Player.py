@@ -103,7 +103,7 @@ class Player:
     def execute(self):
         return self._strategy.execute(self)
 
-    def _update_possibilities(self, board):
+    def update_possibilities(self, board):
         self._p.clear()
 
         for worker in self.workers:
@@ -139,7 +139,7 @@ class Player:
                     self._p[worker][move].add(build)
 
         if len(self._p) == 0:
-            raise GameOverError()
+            raise Loss
 
     # Getters & Setters
     @property

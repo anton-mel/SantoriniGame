@@ -1,7 +1,7 @@
 from Board import Board
 from cli import SantoriniCLI, parse_args  # fix?
 from Player import PlayerFactory
-from exceptions import GameOverError
+from exceptions import Loss, Win
 from Memento import Originator, Caretaker
 
 
@@ -27,12 +27,15 @@ class SantoriniGame:
             self._caretaker = Caretaker(self._originator)
 
     def won(self):
-        for key, value in self._board.observers.items():
-            if self._board.get_cell(value).level == 3:
-                self._next()
-                SantoriniCLI().print_end(self.run, self._current.color)
-                return True
-        return False
+        SantoriniCLI().print_end(self.run, self._current.color)
+
+    def loss(self):
+        if self._current.color == "white":
+            winner = "blue"
+        else:
+            winner = "white"
+
+        SantoriniCLI().print_end(self.run, winner)
 
     def _update_state(self):
         white_workers_pos = self._white.worker_pos()
@@ -68,19 +71,23 @@ class SantoriniGame:
                 SantoriniCLI().print_score(h, c, d)
             print(end="\n")
 
-            self._current._update_possibilities(self._board)
+            self._current.update_possibilities(self._board)
 
             if self._undo_redo == "on":
                 self.memento_display()
 
-            if self.won():
+            if self._board.check_win():
+                self._next()
+                self.won()
                 break
 
             try:
                 symbol, move, build = self._execute_command()
                 self._next()
-            except GameOverError:
+            except Win:
                 self.won()
+            except Loss:
+                self.loss()
                 break
             else:
                 print(f"{symbol}, {move}, {build}", end="")

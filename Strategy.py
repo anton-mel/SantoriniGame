@@ -1,5 +1,5 @@
 from cli import SantoriniCLI
-from exceptions import WorkerError, DirectionError, MoveError, GameOverError
+from exceptions import WorkerError, DirectionError, MoveError, Loss
 from DirectionUtils import DirectionUtils
 import random
 
@@ -35,7 +35,7 @@ class Strategy:
         self._build(self._selected_build)
 
     def execute(self, player):
-        print(self._p)
+        # print(self._p)
         self._get_worker(player)
         self._get_move(player)
         self._get_build()

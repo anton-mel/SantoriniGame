@@ -58,7 +58,10 @@ class HumanStrategy(Strategy):
                 symbol = SantoriniCLI().select_worker()
                 worker = player._select_worker(symbol)
 
-                if (symbol in self._board.observers) and (not worker):
+                symbol_in_state = (symbol in self._board.state.white_workers or symbol in self._board.state.blue_workers)
+                worker_is_none = (not worker)
+
+                if symbol_in_state and worker_is_none:
                     raise WorkerError("That is not your worker")
 
                 if not worker:
@@ -110,22 +113,19 @@ class HumanStrategy(Strategy):
 
 class HeuristicStrategy(Strategy):
     def _get_move(self, player):
-        best_score = 0
+        best_score = -10
         best_move = None
         for worker in self._p:
             for move in self._p[worker]:
-                # get score for move
-                positions = [worker.position for worker in player.workers]
-                height, center, distance = self._board.check_score(
+                (height, center, distance) = self._board.check_score(
                     worker.symbol,
-                    move,
-                    positions,
+                    move,   
                 )
 
                 move_score = 3 * height + 2 * center + distance
 
                 if self._board.get_cell(move).level == 3:
-                    move_score = 100000
+                    move_score = 10000
 
                 if move_score > best_score:
                     best_move = move

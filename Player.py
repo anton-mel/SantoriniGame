@@ -1,6 +1,5 @@
-from cli import SantoriniCLI
+import copy
 from exceptions import *
-from DirectionUtils import DirectionUtils
 from Strategy import HumanStrategy, HeuristicStrategy, RandomStrategy
 
 
@@ -24,13 +23,14 @@ class Worker:
     def position(self, new_position):
         self._position = new_position
 
-        # Observer Pattern (Subject Method)
-        self._board.update_worker_position(self)
-        print(self._board.observers)
-
     def __repr__(self) -> str:
         return self.symbol
-
+    
+    def __deepcopy__(self, memo):
+        new_worker = Worker(self._board, self._symbol, self._position)
+        memo[id(self)] = new_worker
+        return new_worker
+    
 
 class WorkerFactory:
     @staticmethod
@@ -49,9 +49,6 @@ class WhiteWorkerFactory:
         worker1 = Worker(board, "A", (3, 1))
         worker2 = Worker(board, "B", (1, 3))
 
-        board.add_observer(worker1.symbol, worker1.position)
-        board.add_observer(worker2.symbol, worker2.position)
-
         return [worker1, worker2]
 
 
@@ -59,9 +56,6 @@ class BlueWorkerFactory:
     def create_workers(self, board):
         worker1 = Worker(board, "Y", (1, 1))
         worker2 = Worker(board, "Z", (3, 3))
-
-        board.add_observer(worker1.symbol, worker1.position)
-        board.add_observer(worker2.symbol, worker2.position)
 
         return [worker1, worker2]
 
@@ -73,7 +67,7 @@ class Player:
         self._color = color
         self._workers = workers
         self._p = {}
-
+    
     def get_worker_at(self, pos):
         if self.workers[0].position == pos:
             return self.workers[0]
@@ -82,9 +76,9 @@ class Player:
             return self.workers[1]
 
         return None
-
-    def worker_pos(self):
-        return [worker.position for worker in self._workers]
+    
+    def worker_deep_copy(self):
+        return [copy.deepcopy(worker) for worker in self._workers]
 
     def __repr__(self):
         return self.color
@@ -145,6 +139,10 @@ class Player:
     @property
     def workers(self):
         return self._workers
+    
+    @workers.setter
+    def workers(self, workers):
+        self._workers = workers
 
     @property
     def color(self):

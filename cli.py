@@ -58,13 +58,12 @@ class SantoriniCLI:
     def print_turn(self, turn, color, workers):
         print(f"Turn: {turn}, {color} ({workers})", end="")
 
-    def print_end(self, run_game, winner):
+    def print_end(self, restart, winner):
         print(f"{winner} has won")
-        if input("Play Again?\n") != "yes":
+        if input("Play Again?\n").lower() != "yes":
             exit(0)
         else:
-            run_game()
-
+            restart()
 
 
 def parse_args():

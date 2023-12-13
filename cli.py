@@ -1,6 +1,6 @@
-# Memento Pattern (For Command History)            -     NOT
-# Template Pattern!                                -     NOT
-# Iterator Pattern                                 -     DONE
+# Memento Pattern (For Command History)            -     DONE
+# Template Pattern!                                -     DONE
+# Singleton Pattern                                -     DONE
 # Factory Method (args passed: human/computer)     -     DONE
 
 import sys
@@ -52,8 +52,8 @@ class SantoriniCLI:
     def print_invalid_move(self, e):
         print(f"Cannot {e.move_type} {e.direction}")
 
-    def print_worker_error(self, e):
-        print(e.mes)
+    def print_worker_error(self, mes):
+        print(mes)
 
     def print_turn(self, turn, color, workers):
         print(f"Turn: {turn}, {color} ({workers})", end="")

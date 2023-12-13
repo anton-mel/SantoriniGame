@@ -1,5 +1,5 @@
 from cli import SantoriniCLI
-from exceptions import WorkerError, DirectionError, MoveError, Loss
+from exceptions import WorkerError, MoveError
 from DirectionUtils import DirectionUtils
 import random
 
@@ -35,7 +35,6 @@ class Strategy:
         self._build(self._selected_build)
 
     def execute(self, player):
-        # print(self._p)
         self._get_worker(player)
         self._get_move(player)
         self._get_build()
@@ -71,7 +70,7 @@ class HumanStrategy(Strategy):
                     raise WorkerError("That worker cannot move")
 
             except WorkerError as e:
-                SantoriniCLI.print_worker_error(e)
+                SantoriniCLI().print_worker_error(e.mes)
             else:
                 self._selected_worker = worker
                 break

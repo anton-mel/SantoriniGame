@@ -4,7 +4,7 @@ from Board import Board
 from cli import SantoriniCLI, parse_args  # fix?
 from Player import PlayerFactory
 from exceptions import Loss, Win
-from Memento import Originator, Caretaker
+from Memento import Originator, Caretaker, GameState
 
 
 class SantoriniGame:
@@ -23,13 +23,21 @@ class SantoriniGame:
         self._turn = 1
         self._current = self._white
 
+        self._originator = Originator(self._board.state)
+        self._caretaker = Caretaker(self._originator)
 
-        if self._undo_redo == "on":
-            self._originator = Originator(self._board.state)
-            self._caretaker = Caretaker(self._originator)
+        # Save default positions
+        self._originator.restore(self._generate_state())
+        self._caretaker.backup()
+
+    def print_turn(self):
+        SantoriniCLI().print_board(self._board)
+        SantoriniCLI().print_turn(
+            self._turn,
+            str(self._current),
+            self._current.worker_string(),
+        )
             
-        self._update_state()
-
     def won(self):
         self._next()
         for worker in self._current.workers:
@@ -39,34 +47,43 @@ class SantoriniGame:
     def copy_turn(self):
         return copy.copy(self._turn)
 
-    def _update_state(self):
+    def _generate_state(self):
+        # Generate DeepCopy of the GameState
         turn_copy = copy.copy(self._turn)
-        white_workers_pos = self._white.worker_deep_copy()
-        blue_workers_pos = self._blue.worker_deep_copy()
+        white_workers = self._white.worker_deep_copy()
+        blue_workers = self._blue.worker_deep_copy()
         grid = copy.deepcopy(self._board.grid)
-        self._originator.generate_game_state(turn_copy, white_workers_pos, blue_workers_pos, grid)
-        self._board._update_state(turn_copy, white_workers_pos, blue_workers_pos, grid)
+
+        game_state = GameState(turn_copy, white_workers, blue_workers, grid)
+        memento = self._originator.generate(game_state)
+
+        return memento
 
     def _restore_state(self):
-        state = self._originator.state
-        self._turn = state.turn
-        self._white.workers = state.white_workers
-        self._blue.workers = state.blue_workers
-        self._board.grid = state.grid
-        self._update_state()
+        state = self._originator.save()
+        self._turn = state.get_turn()
+        self._current = self._blue if (self._turn) % 2 == 0 else self._white
+        self._white.workers = state.get_white_workers()
+        self._blue.workers = state.get_blue_workers()
+        self._board.grid = state.get_grid()
 
     def memento_display(self):
         command = SantoriniCLI().get_memento()
 
         if command == "undo":
+            # Undo the current state and move to the next
             self._caretaker.undo()
             self._restore_state()
             return True
         elif command == "redo":
+            # Similarly
             self._caretaker.redo()
-            self._restore_state()
+            self._restore_state() 
             return True
         elif command == "next":
+            # Update the Caretaker Mementos
+            self._originator.restore(self._generate_state())
+            self._caretaker.backup()
             return False
         
     def restart(self):
@@ -77,58 +94,65 @@ class SantoriniGame:
     def run(self):
         """Infinite turn loop."""
         while True:
-            self._update_state()
+            # Initially pass to the board (printing) last updated state
+            self._board._update_state(self._generate_state()) 
 
-            SantoriniCLI().print_board(self._board)
-            SantoriniCLI().print_turn(
-                self._turn,
-                str(self._current),
-                self._current.worker_string(),
-            )
+            self.print_turn()
 
             if self._score_display == "on":
                 positions = [worker.position for worker in self.current.workers]
                 h, c, d = self._board.score(positions)
                 SantoriniCLI().print_score(h, c, d)
             print(end="\n")
-            
+
             try:
+                # Update possibilities & check if lost
                 self._current.update_possibilities(self._board)
             except Loss:
+                self._next()
                 self.won()
                 break
 
+            # Display Memento
+            undo_redo_done = None
             if self._undo_redo == "on":
-                # print(self._originator.)
-                if self.memento_display():
+                # Contoll Undo/Redo Command Function
+                undo_redo_done = self.memento_display()
+                if undo_redo_done:
                     continue
+
+                # Since we first want to check if lost, then memento updates
+                # So there should be generated new possibilities on the new state
                 self._current.update_possibilities(self._board)
 
             try:
+                # Ask for the direction strategies
                 self._board.check_win(self._blue)
                 self._board.check_win(self._white)
+
+                # Execute Command
                 symbol, move, build = self._execute_command()
                 self._next()
+
             except Win:
                 self.won()
+            
             print(f"{symbol}, {move}, {build}", end="")
+
             if self._score_display == "on":
                 deep_workers = self._current.worker_deep_copy()
                 workers_positions = [worker.position for worker in deep_workers]
                 score = self._board.score(workers_positions)
                 print(f", ({score[0]}, {score[1]}, {score[2]})", end="")
+
             print(end="\n")
 
     def _next(self):
-        self._current = self._white if self._turn % 2 == 0 else self._blue
         self._turn += 1
+        self._current = self._blue if self._turn % 2 == 0 else self._white
 
     # Memento Pattern
     def _execute_command(self):
-        if self._undo_redo == "on":
-            self._caretaker.backup()
-            # self._caretaker.show_history()
-
         return self._current.execute()
 
     @property

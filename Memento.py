@@ -88,6 +88,10 @@ class Memento(ABC):
         pass
 
     @abstractmethod
+    def get_grid(self) -> int:
+        pass
+
+    @abstractmethod
     def get_white_workers(self) -> list:
         pass
 
@@ -111,19 +115,16 @@ class Originator:
 
     def __init__(self, state: object) -> None:
         self._state = state
-        print(f"Originator: My initial state is: {self._state}")
 
-    def generate_game_state(self, turn, white_pos, blue_pos, grid) -> GameState:
+    def generate(self, game_state) -> GameState:
         """
         The Originator's business logic may affect its internal state.
         Therefore, the client should backup the state before launching methods
         of the business logic via the save() method.
         """
 
-        print("Originator: I'm doing something important.")
-        self._state = GameState(turn, white_pos, blue_pos, grid)
-        print(f"Originator: and my state has changed to: {self._state}")
-        return self._state
+        self._state = game_state
+        return self.save()
 
     def save(self) -> Memento:
         """
@@ -138,11 +139,6 @@ class Originator:
         """
 
         self._state = memento.get_state()
-        print(f"Originator: My state has changed to: {self._state}")
-
-    @property
-    def state(self):
-        return self._state
 
 
 class ConcreteMemento(Memento):
@@ -153,7 +149,10 @@ class ConcreteMemento(Memento):
         return self._state
     
     def get_turn(self) -> int:
-        return self._state.turn
+        return int(self._state.turn)
+    
+    def get_grid(self) -> list:
+        return self._state.grid
 
     def get_white_workers(self) -> list:
         return self._state.white_workers
@@ -174,33 +173,30 @@ class Caretaker:
         self._originator = originator
 
     def backup(self) -> None:
-        print("Caretaker: Saving Originator's state...")
         self._mementos.append(self._originator.save())
         self._undone_mementos = []
 
     def undo(self) -> None:
-        if not len(self._mementos):
-            return
+        if not self._mementos:
+            return ValueError
 
+        # First preserve the current originator state
+        self._undone_mementos.append(self._originator.save())
+        # Obtain Latest Momento from the list
         memento = self._mementos.pop()
-        print(f"Caretaker: Restoring state to: {memento.get_turn()}")
-        # try:
+
         self._originator.restore(memento)
-        self._undone_mementos.append(memento)
-        # except Exception:
-        #     self.undo()
 
     def redo(self) -> None:
         if not self._undone_mementos:
             return
-
-        memento = self._undone_mementos.pop()
-        print(f"Caretaker: Redoing to: {memento.get_turn()}")
-        try:
-            self._originator.restore(memento)
-            self._mementos.append(memento)
-        except Exception:
-            self.redo()
+        
+        # Important: Get the last undone memento 
+        # without removing default one
+        memento = self._undone_mementos[-1]
+        self._originator.restore(memento)
+        self._mementos.append(memento)
+        self._undone_mementos.pop()
 
     def show_history(self) -> None:
         print("Caretaker: Here's the list of mementos:")

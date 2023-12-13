@@ -36,13 +36,9 @@ class Board:
     def state(self):
         return self._state
 
-    def _update_state(self, turn, white_workers_pos, blue_workers_pos, grid):
-        self._state = GameState(
-            turn,
-            white_workers_pos,
-            blue_workers_pos,
-            grid
-        )
+    def _update_state(self, memento):
+        self._state = memento.get_state()
+        self._grid = memento.get_grid()
 
     def check_win(self, player):
         for worker in player.workers:

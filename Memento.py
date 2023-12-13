@@ -181,19 +181,17 @@ class Caretaker:
             self._mementos.append(current_state)
             self._undone_mementos = []
 
-        print(len(self._mementos))
-        print(len(self._undone_mementos))
-
     def undo(self) -> None:
-        print("before",len(self._mementos))
-        print("before",len(self._undone_mementos))
+
+        if not len(self._mementos) - 1:
+            return
 
         # Obtain Latest Momento from the list
         originator_state = self._originator.save()
         memento = self._mementos.pop()
         # Impornt: check after pop()
-        if not self._mementos:
-            self._mementos.append(originator_state)
+        if not len(self._mementos) - 1:
+            self._undone_mementos.append(originator_state)
             self._originator.restore(memento)
             return
         
@@ -202,30 +200,23 @@ class Caretaker:
         # Restore to the originator to display it
         self._originator.restore(memento)
 
-        print(len(self._mementos))
-        print(len(self._undone_mementos))
-
     def redo(self) -> None:
         
         if not len(self._undone_mementos):
             return
-        print("before",len(self._mementos))
-        print("before",len(self._undone_mementos))
         
         originator_state = self._originator.save()
         memento = self._undone_mementos.pop()
         if not self._undone_mementos:
-            self._undone_mementos.append(originator_state)
+            self._mementos.append(originator_state)
             self._originator.restore(memento)
             return
+        
+        # First preserve the current originator state
+        self._mementos.append(self._originator.save())
         # Restore to the originator to display it
         self._originator.restore(memento)
 
-        # if len(self._undone_mementos) > 0:
-        #     self._mementos.append(memento)
-
-        print(len(self._mementos))
-        print(len(self._undone_mementos))
 
     def show_history(self) -> None:
         print("Caretaker: Here's the list of mementos:")

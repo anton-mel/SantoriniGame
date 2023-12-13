@@ -85,6 +85,8 @@ class SantoriniGame:
             self._originator.restore(self._generate_state())
             self._caretaker.backup()
             return False
+        else:
+            raise ValueError
         
     def restart(self):
         (white, blue, undo_redo, score_display) = self._args

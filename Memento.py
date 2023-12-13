@@ -173,30 +173,59 @@ class Caretaker:
         self._originator = originator
 
     def backup(self) -> None:
-        self._mementos.append(self._originator.save())
-        self._undone_mementos = []
+
+        # Save Current Originator State
+        current_state = self._originator.save()
+        # If not yet appended, then append and update
+        if current_state not in self._mementos:
+            self._mementos.append(current_state)
+            self._undone_mementos = []
+
+        print(len(self._mementos))
+        print(len(self._undone_mementos))
 
     def undo(self) -> None:
-        if not self._mementos:
-            return ValueError
+        print("before",len(self._mementos))
+        print("before",len(self._undone_mementos))
 
-        # First preserve the current originator state
-        self._undone_mementos.append(self._originator.save())
         # Obtain Latest Momento from the list
+        originator_state = self._originator.save()
         memento = self._mementos.pop()
-
-        self._originator.restore(memento)
-
-    def redo(self) -> None:
-        if not self._undone_mementos:
+        # Impornt: check after pop()
+        if not self._mementos:
+            self._mementos.append(originator_state)
+            self._originator.restore(memento)
             return
         
-        # Important: Get the last undone memento 
-        # without removing default one
-        memento = self._undone_mementos[-1]
+        # First preserve the current originator state
+        self._undone_mementos.append(self._originator.save())
+        # Restore to the originator to display it
         self._originator.restore(memento)
-        self._mementos.append(memento)
-        self._undone_mementos.pop()
+
+        print(len(self._mementos))
+        print(len(self._undone_mementos))
+
+    def redo(self) -> None:
+        
+        if not len(self._undone_mementos):
+            return
+        print("before",len(self._mementos))
+        print("before",len(self._undone_mementos))
+        
+        originator_state = self._originator.save()
+        memento = self._undone_mementos.pop()
+        if not self._undone_mementos:
+            self._undone_mementos.append(originator_state)
+            self._originator.restore(memento)
+            return
+        # Restore to the originator to display it
+        self._originator.restore(memento)
+
+        # if len(self._undone_mementos) > 0:
+        #     self._mementos.append(memento)
+
+        print(len(self._mementos))
+        print(len(self._undone_mementos))
 
     def show_history(self) -> None:
         print("Caretaker: Here's the list of mementos:")

@@ -7,7 +7,7 @@
 
 Santorini Board Game is the final test of **"Software Engineering"**, course of **"Computer Science Engineering"** held at Politecnico di Milano (2019/2020).
 
-**Teacher** Timothy Barron
+**Teacher: Timothy Barron**
 
 ## Project specification
 The project consists of a OOP Python version of the board game *Santorini*, made by Roxley Games.

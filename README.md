@@ -5,19 +5,17 @@
 
 <img src="https://images-na.ssl-images-amazon.com/images/I/91irtho0CNL._AC_SL1500_.jpg" width=192px height=192 px align="right" />
 
-Santorini Board Game is the final test of **"Software Engineering"**, course of **"Computer Science Engineering"** held at Politecnico di Milano (2019/2020).
+Santorini Board Game is the final test of **"Object Oriented Programming (CPSC 327)"**, course of **"Yale University"** held at Timothy Barron (2022).
 
 **Teacher: Timothy Barron**
 
 ## Project specification
-The project consists of a OOP Python version of the board game *Santorini*, made by Roxley Games.
+The project consists of a OOP Python version of the board game *Santorini*, made by Roxley Games. It implement 5 patterns: Factory method, Template Method, Memento Pattern, Iterators, and Singleton Pattern.
 
 You can find the full game [here](https://roxley.com/products/santorini).
 
 The final version includes:
-* initial UML diagram;
-* final UML diagram, generated from the code by automated tools;
-* working game implementation, which has to be rules compliant;
+* UML diagram;
 * source code of the implementation;
 * source code of unity tests.
 ## Find out more

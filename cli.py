@@ -10,11 +10,8 @@ from exceptions import DirectionError
 class SantoriniCLI:
     """Client Interaction Helper Functions."""
 
-    def __init__(self) -> None:
-        pass
-
     def select_worker(self):
-        return input("Select a worker to move:\n")
+        return input("Select a worker to move\n")
 
     def get_direction(self, prompt):
         while True:
@@ -33,11 +30,11 @@ class SantoriniCLI:
         return input(prompt)
 
     def get_move(self):
-        prompt = "Select a direction to move (n, ne, e, se, s, sw, w, nw):\n"
+        prompt = "Select a direction to move (n, ne, e, se, s, sw, w, nw)\n"
         return self.get_direction(prompt)
 
     def get_build(self):
-        prompt = "Select a direction to build (n, ne, e, se, s, sw, w, nw):\n"
+        prompt = "Select a direction to build (n, ne, e, se, s, sw, w, nw)\n"
         return self.get_direction(prompt)
 
     def print_selection(self):
@@ -47,7 +44,7 @@ class SantoriniCLI:
         print(board)
 
     def print_score(self, h_score, c_score, d_score):
-        print(f", ({h_score}, {c_score}, {d_score})", end="")
+        print(f" ({h_score}, {c_score}, {d_score})", end="")
 
     def print_invalid_move(self, e):
         print(f"Cannot {e.move_type} {e.direction}")
@@ -60,11 +57,12 @@ class SantoriniCLI:
 
     def print_end(self, restart, winner):
         print(f"{winner} has won")
-        if input("Play Again?\n").lower() != "yes":
+        if input("Play again?\n").lower() != "yes":
             exit(0)
         else:
             restart()
 
+s_cli = SantoriniCLI()
 
 def parse_args():
     args = sys.argv[1:]

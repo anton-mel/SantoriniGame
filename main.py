@@ -1,7 +1,7 @@
 
 import copy
 from Board import Board
-from cli import SantoriniCLI, parse_args  # fix?
+from cli import s_cli, parse_args  #?
 from Player import PlayerFactory
 from exceptions import Loss, Win
 from Memento import Originator, Caretaker, GameState
@@ -31,8 +31,8 @@ class SantoriniGame:
         self._caretaker.backup()
 
     def print_turn(self):
-        SantoriniCLI().print_board(self._board)
-        SantoriniCLI().print_turn(
+        s_cli.print_board(self._board)
+        s_cli.print_turn(
             self._turn,
             str(self._current),
             self._current.worker_string(),
@@ -40,9 +40,7 @@ class SantoriniGame:
             
     def won(self):
         self._next()
-        for worker in self._current.workers:
-            print(worker.position)
-        SantoriniCLI().print_end(self.restart, self._current.color)
+        s_cli.print_end(self.restart, self._current.color)
     
     def copy_turn(self):
         return copy.copy(self._turn)
@@ -68,7 +66,7 @@ class SantoriniGame:
         self._board.grid = state.get_grid()
 
     def memento_display(self):
-        command = SantoriniCLI().get_memento()
+        command = s_cli.get_memento()
 
         if command == "undo":
             # Undo the current state and move to the next
@@ -101,15 +99,17 @@ class SantoriniGame:
 
             self.print_turn()
 
+            # Scores Before the Move is Executed
             if self._score_display == "on":
+                print(",", end="")
                 positions = [worker.position for worker in self.current.workers]
-                h, c, d = self._board.score(positions)
-                SantoriniCLI().print_score(h, c, d)
+                score = self._board.score(positions, self._current.color)
+                s_cli.print_score(score[0], score[1], score[2])
             print(end="\n")
 
             try:
                 # Update possibilities & check if lost
-                self._current.update_possibilities(self._board)
+                self._current.update_possibilities()
             except Loss:
                 self._next()
                 self.won()
@@ -125,7 +125,7 @@ class SantoriniGame:
 
                 # Since we first want to check if lost, then memento updates
                 # So there should be generated new possibilities on the new state
-                self._current.update_possibilities(self._board)
+                self._current.update_possibilities(self._current.color)
 
             try:
                 # Ask for the direction strategies
@@ -134,20 +134,20 @@ class SantoriniGame:
 
                 # Execute Command
                 symbol, move, build = self._execute_command()
-                self._next()
-
             except Win:
                 self.won()
             
-            print(f"{symbol}, {move}, {build}", end="")
+            print(f"{symbol},{move},{build}", end="")
 
+            # Scores After the Move is Executed
             if self._score_display == "on":
-                deep_workers = self._current.worker_deep_copy()
-                workers_positions = [worker.position for worker in deep_workers]
-                score = self._board.score(workers_positions)
-                print(f", ({score[0]}, {score[1]}, {score[2]})", end="")
+                self._board._update_state(self._generate_state()) 
+                positions = [worker.position for worker in self.current.workers]
+                score = self._board.score(positions, self._current.color) 
+                s_cli.print_score(score[0], score[1], score[2])
 
             print(end="\n")
+            self._next()
 
     def _next(self):
         self._turn += 1

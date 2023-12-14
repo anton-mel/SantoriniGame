@@ -63,10 +63,10 @@ class BlueWorkerFactory:
 class Player:
     """Class representing a player."""
 
-    def __init__(self, color, workers):
+    def __init__(self, color, workers, strategy):
         self._color = color
         self._workers = workers
-        self._p = {}
+        self._strategy = strategy
     
     def get_worker_at(self, pos):
         if self.workers[0].position == pos:
@@ -95,45 +95,11 @@ class Player:
         return selected
 
     def execute(self):
-        return self._strategy.execute(self)
+        self._strategy.update_possibilities(self._workers)
+        return self._strategy.execute()
 
-    def update_possibilities(self, board):
-        self._p.clear()
-
-        for worker in self.workers:
-            pos = worker.position
-            level = board.get_cell(pos).level
-            for move in board.get_ring(pos):
-                cell = board.get_cell(move)
-
-                if cell.level > 3:
-                    continue
-
-                if cell.level > level + 1:
-                    continue
-
-                if board.occupied(move):
-                    continue
-
-                for build in board.get_ring(move):
-                    cell = board.get_cell(build)
-
-                    if board.occupied(build) and build != pos:
-                        continue
-
-                    if cell.level > 3:
-                        continue
-
-                    if worker not in self._p:
-                        self._p[worker] = {}
-
-                    if move not in self._p[worker]:
-                        self._p[worker][move] = set()
-
-                    self._p[worker][move].add(build)
-
-        if len(self._p) == 0:
-            raise Loss
+    def update_possibilities(self):
+        self._strategy.update_possibilities(self._workers)
 
     # Getters & Setters
     @property
@@ -152,39 +118,19 @@ class Player:
     def color(self, color):
         self._color = color
 
-
-class HumanPlayer(Player):
-    def __init__(self, color, workers, board):
-        super().__init__(color, workers)
-        self._strategy = HumanStrategy(board, self._p)
-
-
-class HeuristicPlayer(Player):
-    def __init__(self, color, workers, board):
-        super().__init__(color, workers)
-        self._strategy = HeuristicStrategy(board, self._p)
-
-
-class RandomPlayer(Player):
-    def __init__(self, color, workers, board):
-        super().__init__(color, workers)
-        self._strategy = RandomStrategy(board, self._p)
-
-
 class PlayerFactory:
     @staticmethod
     def get_factory(color, player_type, board):
         worker_factory = WorkerFactory.get_factory(color)
         workers = worker_factory.create_workers(board)
 
-        player_types = {
-            "human": HumanPlayer,
-            "heuristic": HeuristicPlayer,
-            "random": RandomPlayer,
+        strategies = {
+            "human": HumanStrategy,
+            "heuristic": HeuristicStrategy,
+            "random": RandomStrategy,
         }
-        player_class = player_types.get(player_type)
-
-        if player_class:
-            return player_class(color, workers, board)
-        else:
+        strategy = strategies[player_type]
+        if not strategy:
             raise ValueError("Invalid player type")
+
+        return Player(color, workers, strategy(board))

@@ -1,6 +1,6 @@
 
+import math
 from exceptions import MoveError, Win
-from Memento import GameState
 
 
 class GridIterator:
@@ -64,38 +64,42 @@ class Board:
             score += 2 - max(abs(position[0] - 2), abs(position[1] - 2))
         return score
 
-    def total_distance_score(self):
-        min_distance = 99
+    def chebyshev_distance(self, position1, position2):
+        return max(abs(position1[0] - position2[0]), abs(position1[1] - position2[1]))
+    
+    def total_distance_score(self, color):
+        minimize = 0
         result = 0
 
-        for blue_worker in self._state.blue_workers:
-            x1 = blue_worker.position[0]
-            y1 = blue_worker.position[1]
+        if color == "white":
+            workers1 = self._state.blue_workers
+            workers2 = self._state.white_workers
+        else:
+            workers1 = self._state.white_workers
+            workers2 = self._state.blue_workers
 
-            for white_worker in self._state.white_workers:
-                x2 = white_worker.position[0]
-                y2 = white_worker.position[1]
-
-                min_distance = min(abs(x1 - x2) + abs(y1 - y2), min_distance)
-            result += min_distance
-
+        for worker1 in workers1:
+            minimize = 99
+            for worker2 in workers2:
+                minimize = min(self.chebyshev_distance(worker1.position, worker2.position), minimize)
+            result += minimize
         return 8 - result
 
-    def score(self, workers_positions):
-        total_distance = self.total_distance_score()
+    def score(self, workers_positions, color):
+        total_distance = self.total_distance_score(color)
         curr_cell_score = self.total_cell_score(workers_positions)
         curr_pos_score = self.height_score(workers_positions)
 
-        return curr_cell_score, curr_pos_score, total_distance
+        return (curr_cell_score, curr_pos_score, total_distance)
 
-    def check_score(self, symbol, new_positions):
+    def check_score(self, symbol, color, new_positions):
         workers_positions = self._state.get_workers_pos_by_symbol(symbol)
         curr_worker = self._state.get_worker_by_symbol(symbol)
         previous_position = curr_worker.position
         curr_worker.position = new_positions
 
         try:
-            return self.score(workers_positions)
+            return self.score(workers_positions, symbol, color)
         finally:
             curr_worker.position = previous_position
 

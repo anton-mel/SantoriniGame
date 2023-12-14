@@ -1,10 +1,16 @@
-from cli import SantoriniCLI
+import copy
 from exceptions import *
-from DirectionUtils import DirectionUtils
 from Strategy import HumanStrategy, HeuristicStrategy, RandomStrategy
 
+
 class Worker:
-    """Class representing a worker."""
+    """
+    Class representing a worker on the board.
+
+    _symbol (str): The symbol representing the worker.
+    _position (tuple): The current position of the worker on the board.
+    _board (Board): The game board.
+    """
 
     def __init__(self, board, symbol, default_position):
         self._symbol = symbol
@@ -23,15 +29,23 @@ class Worker:
     def position(self, new_position):
         self._position = new_position
 
-        # Observer Pattern (Subject Method)
-        self._board.update_worker_position(self)
-        print(self._board.observers)
-
     def __repr__(self) -> str:
         return self.symbol
-
+    
+    def __deepcopy__(self, memo):
+        new_worker = Worker(self._board, self._symbol, self._position)
+        memo[id(self)] = new_worker
+        return new_worker
+    
 
 class WorkerFactory:
+    """
+    Factory Method Pattern for creating workers based on the player's color.
+
+    Methods:
+        get_factory(color): Returns a factory instance based on the specified color.
+    """
+
     @staticmethod
     def get_factory(color):
         factories = {"white": WhiteWorkerFactory, "blue": BlueWorkerFactory}
@@ -44,34 +58,49 @@ class WorkerFactory:
 
 
 class WhiteWorkerFactory:
+    """
+    Factory class for creating white workers.
+
+    Methods:
+        create_workers(self, board): Creates and returns a list of white workers.
+    """
+
     def create_workers(self, board):
         worker1 = Worker(board, "A", (3, 1))
         worker2 = Worker(board, "B", (1, 3))
-
-        board.add_observer(worker1)
-        board.add_observer(worker2)
 
         return [worker1, worker2]
 
 
 class BlueWorkerFactory:
+    """
+    Factory class for creating blue workers.
+
+    Methods:
+        create_workers(self, board): Creates and returns a list of blue workers.
+    """
+
     def create_workers(self, board):
         worker1 = Worker(board, "Y", (1, 1))
         worker2 = Worker(board, "Z", (3, 3))
-
-        board.add_observer(worker1)
-        board.add_observer(worker2)
 
         return [worker1, worker2]
 
 
 class Player:
-    """Class representing a player."""
+    """
+    Class representing a player controlling the game input and workers.
 
-    def __init__(self, color, workers):
+    _color (str): The color of the player.
+    _workers (list): List of worker instances for the player.
+    _strategy (Strategy): The strategy used by the player.
+    """
+
+    def __init__(self, color, workers, strategy):
         self._color = color
         self._workers = workers
-
+        self._strategy = strategy
+    
     def get_worker_at(self, pos):
         if self.workers[0].position == pos:
             return self.workers[0]
@@ -80,139 +109,73 @@ class Player:
             return self.workers[1]
 
         return None
+    
+    def worker_deep_copy(self):
+        return [copy.deepcopy(worker) for worker in self._workers]
 
     def __repr__(self):
         return self.color
 
-
     def worker_string(self):
+        """Returns a string representation of the player's workers."""
+
         return str(self.workers[0]) + str(self.workers[1])
-    
+
     def _select_worker(self, symbol):
+        """Selects and returns the worker with the specified symbol."""
+
         selected = None
         for worker in self._workers:
             if worker.symbol == symbol:
                 selected = worker
                 break
         return selected
-    
-    def _update_position(self, current, direction):
-        delta = DirectionUtils.get_direction_delta(direction)
-        new_position = (
-            current[0] + delta[0],
-            current[1] + delta[1])
-        return new_position
-
-    def _move(self, direction, worker, board):
-        current = worker.position
-        new_position = self._update_position(current, direction)
-        board.validate("move", new_position, direction)
-        
-        # Cannot Move to the Occupied Cell
-        if board.occupied(new_position):
-            raise MoveError("move", direction)
-        # Cannot Skip Cells on Raise
-        if board.get_cell(current).level + 1 < board.get_cell(new_position).level:
-            raise MoveError("move", direction)
-        # Cannot Move to the Cell High of 4
-        if board.get_cell(new_position).level > 3:
-            raise MoveError("move", direction)
-
-        worker.position = new_position
-
-    def _build(self, direction, worker, board):
-        current = worker.position
-        new_position = self._update_position(current, direction)
-        board.validate("build", new_position, direction)
-
-        # Cannot Build Too High
-        if board.get_cell(new_position).level > 3:
-            raise MoveError("build", direction)
-
-        board.build(new_position)
 
     def execute(self):
-        self._strategy.execute()
+        """Executes the player's strategy and returns the result."""
+
+        self._strategy.update_possibilities(self._workers)
+        return self._strategy.execute()
+
+    def update_possibilities(self):
+        """Updates the possibilities for the player's strategy."""
+
+        self._strategy.update_possibilities(self._workers)
 
     # Getters & Setters
     @property
     def workers(self):
         return self._workers
+    
+    @workers.setter
+    def workers(self, workers):
+        self._workers = workers
 
     @property
     def color(self):
         return self._color
-    
+
     @color.setter
     def color(self, color):
         self._color = color
 
-
-class HumanPlayer(Player):
-    def __init__(self, color, workers, board):
-        super().__init__(color, workers)
-        self._strategy = HumanStrategy(board, self)
-
-    # def _execute(self):
-        # while True:
-        #     try:
-        #         symbol = SantoriniCLI().select_worker()
-        #         worker = super()._select_worker(symbol)
-
-        #         if (symbol in board.observers) and (not worker):
-        #             raise WorkerError("That is not your worker")
-                
-        #         if not worker:
-        #             raise WorkerError("Not a valid worker")
-
-        #         break
-        #     except WorkerError as e:
-        #         print(e.mes)
-
-        # while True:
-        #     try:
-        #         move_direction = SantoriniCLI().get_move()
-        #         super()._move(move_direction, worker, board)
-        #         break
-        #     except MoveError as e:
-        #         print(f"Cannot {e.move_type} {e.direction}")
-        #     except DirectionError as e:
-        #         print(f"{e.mes}")
-
-        # while True:
-        #     try:
-        #         build_direction = SantoriniCLI().get_build()
-        #         super()._build(build_direction, worker, board)
-        #         break
-        #     except MoveError as e:
-        #         print(f"Cannot {e.move_type} {e.direction}")
-        #     except DirectionError as e:
-        #         print(f"{e.mes}")
-
-        # return symbol, move_direction, build_direction
-
-class HeuristicPlayer(Player):
-    def __init__(self, color, workers, board):
-        super().__init__(color, workers)
-        self._strategy = HeuristicStrategy(board, self)
-
-class RandomPlayer(Player):
-    def __init__(self, color, workers, board):
-        super().__init__(color, workers)
-        self._strategy = RandomStrategy(board, self)
-
-
 class PlayerFactory:
+    """Factory Method Pattern for creating player instances."""
+
     @staticmethod
     def get_factory(color, player_type, board):
+        """Returns a player instance based on the specified parameters."""
+        
         worker_factory = WorkerFactory.get_factory(color)
         workers = worker_factory.create_workers(board)
 
-        player_types = {"human": HumanPlayer, "heuristic": HeuristicPlayer, "random": RandomPlayer}
-        player_class = player_types.get(player_type)
-
-        if player_class:
-            return player_class(color, workers, board)
-        else:
+        strategies = {
+            "human": HumanStrategy,
+            "heuristic": HeuristicStrategy,
+            "random": RandomStrategy,
+        }
+        strategy = strategies[player_type]
+        if not strategy:
             raise ValueError("Invalid player type")
 
+        return Player(color, workers, strategy(board))

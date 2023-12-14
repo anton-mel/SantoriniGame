@@ -6,12 +6,14 @@ class MoveError(Exception):
         self.move_type = move_type
         self.direction = direction
 
+
 class WorkerError(Exception):
     """Fix later"""
 
     def __init__(self, mes):
         super().__init__()
         self.mes = mes
+
 
 class DirectionError(Exception):
     """Fix later"""
@@ -20,8 +22,17 @@ class DirectionError(Exception):
         super().__init__()
         self.mes = mes
 
+
 class MementoError(Exception):
     """Fix later"""
 
     def __init__(self):
         super().__init__()
+
+
+class Loss(Exception):
+    pass
+
+
+class Win(Exception):
+    pass

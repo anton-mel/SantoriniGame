@@ -1,16 +1,80 @@
 from abc import ABC, abstractmethod
 
-# from the website copied
-from datetime import datetime
-from random import sample
-from string import ascii_letters
-
-
 class GameState:
-    def __init__(self, turn, white_workers, blue_workers):
-        self.turn = turn
-        self.white_workers = white_workers
-        self.blue_workers = blue_workers
+    def __init__(self, turn, white_workers, blue_workers, grid):
+        self._turn = turn
+        self._white_workers = white_workers
+        self._blue_workers = blue_workers
+        self._grid = grid
+    
+    @property
+    def turn(self):
+        return self._turn
+
+    @property
+    def white_workers(self):
+        return self._white_workers
+    
+    @property
+    def blue_workers(self):
+        return self._blue_workers
+    
+    @property
+    def grid(self):
+        return self._grid
+    
+    @turn.setter
+    def turn(self, turn):
+        self._turn = turn
+    
+    @white_workers.setter
+    def white_workers(self, white_workers):
+        self._white_workers = white_workers
+    
+    @blue_workers.setter
+    def blue_workers(self, blue_workers):
+        self._blue_workers = blue_workers
+
+    @grid.setter
+    def grid(self, grid):
+        self._grid = grid
+
+    ############################################
+    ## Deep Copy for Memento & Possible Moves ##
+    ############################################
+    
+    def get_worker_by_symbol(self, symbol):
+        for worker in self._white_workers:
+            if worker.symbol == symbol:
+                return worker
+        for worker in self._blue_workers:
+            if worker.symbol == symbol:
+                return worker
+
+        return None 
+    
+    def get_workers_pos_by_symbol(self, symbol):
+        matching_workers = []
+        
+        for worker in self._white_workers:
+            if worker.symbol == symbol:
+                matching_workers.append(worker.position)
+        
+        for worker in self._blue_workers:
+            if worker.symbol == symbol:
+                matching_workers.append(worker.position)
+
+        return matching_workers
+    
+    def get_worker_by_position(self, position):
+        for worker in self._white_workers:
+            if worker.position == position:
+                return worker
+        for worker in self._blue_workers:
+            if worker.position == position:
+                return worker
+
+        return None
 
 class Memento(ABC):
     """
@@ -21,6 +85,10 @@ class Memento(ABC):
 
     @abstractmethod
     def get_turn(self) -> int:
+        pass
+
+    @abstractmethod
+    def get_grid(self) -> int:
         pass
 
     @abstractmethod
@@ -47,19 +115,16 @@ class Originator:
 
     def __init__(self, state: object) -> None:
         self._state = state
-        print(f"Originator: My initial state is: {self._state}")
 
-    def generate_game_state(self, turn, white_pos, blue_pos) -> GameState:
+    def generate(self, game_state) -> GameState:
         """
         The Originator's business logic may affect its internal state.
         Therefore, the client should backup the state before launching methods
         of the business logic via the save() method.
         """
 
-        print("Originator: I'm doing something important.")
-        self._state = GameState(turn, white_pos, blue_pos)
-        print(f"Originator: and my state has changed to: {self._state}")
-
+        self._state = game_state
+        return self.save()
 
     def save(self) -> Memento:
         """
@@ -74,22 +139,26 @@ class Originator:
         """
 
         self._state = memento.get_state()
-        print(f"Originator: My state has changed to: {self._state}")
 
 
 class ConcreteMemento(Memento):
     def __init__(self, state: GameState) -> None:
         self._state = state
 
+    def get_state(self) -> GameState:
+        return self._state
+    
     def get_turn(self) -> int:
-        return self._state.turn
+        return int(self._state.turn)
+    
+    def get_grid(self) -> list:
+        return self._state.grid
 
     def get_white_workers(self) -> list:
         return self._state.white_workers
 
     def get_blue_workers(self) -> list:
         return self._state.blue_workers
-
 
 class Caretaker:
     """
@@ -100,39 +169,58 @@ class Caretaker:
 
     def __init__(self, originator: Originator) -> None:
         self._mementos = []
-        self._undone_mementos = [] 
+        self._undone_mementos = []
         self._originator = originator
 
     def backup(self) -> None:
-        print("Caretaker: Saving Originator's state...")
-        self._mementos.append(self._originator.save())
-        self._undone_mementos = []
+
+        # Save Current Originator State
+        current_state = self._originator.save()
+        # If not yet appended, then append and update
+        if current_state not in self._mementos:
+            self._mementos.append(current_state)
+            self._undone_mementos = []
 
     def undo(self) -> None:
-        if not len(self._mementos):
+
+        if not len(self._mementos) - 1:
             return
 
+        # Obtain Latest Momento from the list
+        originator_state = self._originator.save()
         memento = self._mementos.pop()
-        print(f"Caretaker: Restoring state to: {memento.get_turn()}")
-        try:
+        # Impornt: check after pop()
+        if not len(self._mementos) - 1:
+            self._undone_mementos.append(originator_state)
             self._originator.restore(memento)
-            self._undone_mementos.append(memento)
-        except Exception:
-            self.undo()
+            return
+        
+        # First preserve the current originator state
+        self._undone_mementos.append(self._originator.save())
+        # Restore to the originator to display it
+        self._originator.restore(memento)
 
     def redo(self) -> None:
-        if not self._undone_mementos:
+        
+        if not len(self._undone_mementos):
             return
-
+        
+        originator_state = self._originator.save()
         memento = self._undone_mementos.pop()
-        print(f"Caretaker: Redoing to: {memento.get_turn()}")
-        try:
+        if not self._undone_mementos:
+            self._mementos.append(originator_state)
             self._originator.restore(memento)
-            self._mementos.append(memento)
-        except Exception:
-            self.redo()
+            return
+        
+        # First preserve the current originator state
+        self._mementos.append(self._originator.save())
+        # Restore to the originator to display it
+        self._originator.restore(memento)
+
 
     def show_history(self) -> None:
         print("Caretaker: Here's the list of mementos:")
         for memento in self._mementos:
-            print(memento.get_blue_workers(), " ", momento.get_white_workers)
+            print("Blue Workers:", memento.get_blue_workers())
+            print("White Workers:", memento.get_white_workers())
+

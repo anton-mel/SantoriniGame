@@ -4,7 +4,13 @@ from exceptions import MoveError, Win
 
 
 class GridIterator:
-    """Grid Iterator that prints Cell Step by Step."""
+    """
+    !!!!!!!!!!!!!!!!!!!!1!!!!!!!!!!!!!!!!!!!
+    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    DEEEELEEEETEE!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    !!!!!!!!!!!!!!!!!!!!1!!!!!!!!!!!!!!!!!!!
+    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    """
 
     def __init__(self, board):
         self._board = board
@@ -24,7 +30,28 @@ class GridIterator:
 
 
 class Board:
-    """Santorini Board."""
+    """
+    Santorini Board that holds the workers and grid of Cells of buildings.
+
+    SIZE (int): The size of the board.
+    _grid (list): The 2D grid representing the board.
+    _state (Memento): The state of the board.
+
+    Methods: FIX !!!!!!!!!!!!!!! Place to methods instead
+        check_win(self, player): Checks if a player has won.
+        total_cell_score(self, workers_positions): Calculates the total cell score for given worker positions.
+        height_score(self, workers_positions): Calculates the height score for given worker positions.
+        chebyshev_distance(self, position1, position2): Calculates the Chebyshev distance between two positions.
+        total_distance_score(self, color): Calculates the total distance score for a given player color.
+        score(self, workers_positions, color): Calculates the score based on various factors.
+        check_score(self, symbol, color, new_positions): Checks the score for a move.
+        occupied(self, position): Checks if a position is occupied by a worker.
+        validate(self, type, new, direction): Validates a move or build action.
+        get_ring(self, pos): Returns a ring of positions around a given position.
+        __iter__(self): Returns an iterator for the board.
+        build(self, position): Builds a structure at the specified position on the board.
+        get_cell(self, pos): Returns the cell at the specified position on the board.
+    """
 
     SIZE = 5
 
@@ -165,12 +192,18 @@ class Board:
 
 
 class Cell:
-    """Board Cell."""
+    """
+    Board Cell holding a buildings.
+
+    _level (int): The level of the cell.
+    """
 
     def __init__(self, level=0) -> None:
         self._level = level
 
     def upgrade(self):
+        """Upgrades the cell level if it is below the maximum."""
+
         if self._level < 4:
             self._level += 1
 

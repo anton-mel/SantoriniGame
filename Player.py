@@ -4,7 +4,13 @@ from Strategy import HumanStrategy, HeuristicStrategy, RandomStrategy
 
 
 class Worker:
-    """Class representing a worker."""
+    """
+    Class representing a worker on the board.
+
+    _symbol (str): The symbol representing the worker.
+    _position (tuple): The current position of the worker on the board.
+    _board (Board): The game board.
+    """
 
     def __init__(self, board, symbol, default_position):
         self._symbol = symbol
@@ -33,6 +39,13 @@ class Worker:
     
 
 class WorkerFactory:
+    """
+    Factory Method Pattern for creating workers based on the player's color.
+
+    Methods:
+        get_factory(color): Returns a factory instance based on the specified color.
+    """
+
     @staticmethod
     def get_factory(color):
         factories = {"white": WhiteWorkerFactory, "blue": BlueWorkerFactory}
@@ -45,6 +58,13 @@ class WorkerFactory:
 
 
 class WhiteWorkerFactory:
+    """
+    Factory class for creating white workers.
+
+    Methods:
+        create_workers(self, board): Creates and returns a list of white workers.
+    """
+
     def create_workers(self, board):
         worker1 = Worker(board, "A", (3, 1))
         worker2 = Worker(board, "B", (1, 3))
@@ -53,6 +73,13 @@ class WhiteWorkerFactory:
 
 
 class BlueWorkerFactory:
+    """
+    Factory class for creating blue workers.
+
+    Methods:
+        create_workers(self, board): Creates and returns a list of blue workers.
+    """
+
     def create_workers(self, board):
         worker1 = Worker(board, "Y", (1, 1))
         worker2 = Worker(board, "Z", (3, 3))
@@ -61,7 +88,13 @@ class BlueWorkerFactory:
 
 
 class Player:
-    """Class representing a player."""
+    """
+    Class representing a player controlling the game input and workers.
+
+    _color (str): The color of the player.
+    _workers (list): List of worker instances for the player.
+    _strategy (Strategy): The strategy used by the player.
+    """
 
     def __init__(self, color, workers, strategy):
         self._color = color
@@ -84,9 +117,13 @@ class Player:
         return self.color
 
     def worker_string(self):
+        """Returns a string representation of the player's workers."""
+
         return str(self.workers[0]) + str(self.workers[1])
 
     def _select_worker(self, symbol):
+        """Selects and returns the worker with the specified symbol."""
+
         selected = None
         for worker in self._workers:
             if worker.symbol == symbol:
@@ -95,10 +132,14 @@ class Player:
         return selected
 
     def execute(self):
+        """Executes the player's strategy and returns the result."""
+
         self._strategy.update_possibilities(self._workers)
         return self._strategy.execute()
 
     def update_possibilities(self):
+        """Updates the possibilities for the player's strategy."""
+
         self._strategy.update_possibilities(self._workers)
 
     # Getters & Setters
@@ -119,8 +160,12 @@ class Player:
         self._color = color
 
 class PlayerFactory:
+    """Factory Method Pattern for creating player instances."""
+
     @staticmethod
     def get_factory(color, player_type, board):
+        """Returns a player instance based on the specified parameters."""
+        
         worker_factory = WorkerFactory.get_factory(color)
         workers = worker_factory.create_workers(board)
 

@@ -5,6 +5,18 @@ import random
 
 
 class Strategy:
+    """
+    Base class representing a strategy for playing the Santorini board game.
+
+    Attributes:
+        _p (dict): Dictionary storing possible moves and builds for each worker.
+        _selected_worker (Worker): The currently selected worker for the strategy.
+        _selected_move (tuple): The selected move coordinates.
+        _move_direction (str): The direction of the selected move.
+        _selected_build (tuple): The selected build coordinates.
+        _build_direction (str): The direction of the selected build.
+    """
+
     def __init__(self, board):
         self._board = board
         self._p = {}
@@ -31,6 +43,8 @@ class Strategy:
         )
 
     def update_possibilities(self, workers):
+        """Updates possible moves and builds for each worker on the board."""
+        
         self._p.clear()
 
         for worker in workers:
@@ -72,6 +86,10 @@ class Strategy:
         self._build(self._selected_build)
 
     def execute(self):
+        """
+        Executes the entire strategy, including worker selection, move selection, and building.
+        Returns a tuple containing worker symbol, move direction, and build direction.
+        """
         self._get_worker()
         self._get_move()
         self._get_build()
@@ -88,6 +106,15 @@ class Strategy:
 
 
 class HumanStrategy(Strategy):
+    """
+    Subclass of Strategy representing a human-controlled strategy.
+
+    Methods:
+        execute(self): 
+            Executes the entire human strategy, including worker selection, move selection, and building.
+            Returns a tuple containing worker symbol, move direction, and build direction.
+    """
+
     def _get_worker(self):
         while True:
             try:
@@ -158,6 +185,15 @@ class HumanStrategy(Strategy):
 
 
 class HeuristicStrategy(Strategy):
+    """
+    Subclass of Strategy representing a heuristic-based strategy.
+
+    Methods:
+        execute(self): 
+            Executes the entire heuristic strategy, including worker selection, move selection, and building.
+            Returns a tuple containing worker symbol, move direction, and build direction.
+    """
+
     def _get_move(self):
         best_score = -10
         best_move = None
@@ -191,6 +227,15 @@ class HeuristicStrategy(Strategy):
 
 
 class RandomStrategy(Strategy):
+    """
+    Subclass of Strategy representing a random strategy.
+
+    Methods:
+        execute(self): 
+            Executes the entire random strategy, including worker selection, move selection, and building.
+            Returns a tuple containing worker symbol, move direction, and build direction.
+    """
+        
     def _get_worker(self):
         self._selected_worker = random.choice(list(self._p.keys()))
 

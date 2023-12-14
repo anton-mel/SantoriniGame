@@ -11,9 +11,16 @@ class SantoriniCLI:
     """Client Interaction Helper Functions."""
 
     def select_worker(self):
+        """Prompts the user to select a worker and returns the input."""
+
         return input("Select a worker to move\n")
 
     def get_direction(self, prompt):
+        """
+        Prompts the user to input a direction and validates it. 
+        Returns the validated direction.
+        """
+
         while True:
             try:
                 direction = input(prompt)
@@ -56,6 +63,8 @@ class SantoriniCLI:
         print(f"Turn: {turn}, {color} ({workers})", end="")
 
     def print_end(self, restart, winner):
+        """Prints the end of the game, including the winner, and prompts for a restart by passing the function."""
+
         print(f"{winner} has won")
         if input("Play again?\n").lower() != "yes":
             exit(0)
@@ -65,6 +74,14 @@ class SantoriniCLI:
 s_cli = SantoriniCLI()
 
 def parse_args():
+    """
+    Parses command line arguments for configuring the Santorini game.
+
+    Returns:
+        dict: A dictionary containing configuration options for white player type, blue player type,
+              undo/redo enablement, and score display enablement.
+    """
+    
     args = sys.argv[1:]
 
     white_player_type = (

@@ -29,7 +29,7 @@ The final version includes:
 | Basic rules | [✅] |
 | Complete rules | [✅] |
 | Socket |[✅] |
-| GUI | [⛔] |
+| GUI | [⚠️] |
 | CLI |[✅] |
 | Heuristic/Random/Human | [✅] |
 | Multiple games | [✅] |

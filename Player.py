@@ -31,12 +31,12 @@ class Worker:
 
     def __repr__(self) -> str:
         return self.symbol
-    
+
     def __deepcopy__(self, memo):
         new_worker = Worker(self._board, self._symbol, self._position)
         memo[id(self)] = new_worker
         return new_worker
-    
+
 
 class WorkerFactory:
     """
@@ -100,7 +100,7 @@ class Player:
         self._color = color
         self._workers = workers
         self._strategy = strategy
-    
+
     def get_worker_at(self, pos):
         if self.workers[0].position == pos:
             return self.workers[0]
@@ -109,7 +109,7 @@ class Player:
             return self.workers[1]
 
         return None
-    
+
     def worker_deep_copy(self):
         return [copy.deepcopy(worker) for worker in self._workers]
 
@@ -134,7 +134,7 @@ class Player:
     def execute(self):
         """Executes the player's strategy and returns the result."""
 
-        self._strategy.update_possibilities(self._workers)
+        # self._strategy.update_possibilities(self._workers)
         return self._strategy.execute()
 
     def update_possibilities(self):
@@ -146,7 +146,7 @@ class Player:
     @property
     def workers(self):
         return self._workers
-    
+
     @workers.setter
     def workers(self, workers):
         self._workers = workers
@@ -159,13 +159,14 @@ class Player:
     def color(self, color):
         self._color = color
 
+
 class PlayerFactory:
     """Factory Method Pattern for creating player instances."""
 
     @staticmethod
     def get_factory(color, player_type, board):
         """Returns a player instance based on the specified parameters."""
-        
+
         worker_factory = WorkerFactory.get_factory(color)
         workers = worker_factory.create_workers(board)
 
@@ -178,4 +179,4 @@ class PlayerFactory:
         if not strategy:
             raise ValueError("Invalid player type")
 
-        return Player(color, workers, strategy(board))
+        return Player(color, workers, strategy(board, workers))

@@ -1,7 +1,6 @@
-
 import copy
 from Board import Board
-from cli import s_cli, parse_args  #?
+from cli import s_cli, parse_args  # ?
 from Player import PlayerFactory
 from exceptions import Loss, Win
 from Memento import Originator, Caretaker, GameState
@@ -37,11 +36,11 @@ class SantoriniGame:
             str(self._current),
             self._current.worker_string(),
         )
-            
+
     def won(self):
         self._next()
         s_cli.print_end(self.restart, self._current.color)
-    
+
     def copy_turn(self):
         return copy.copy(self._turn)
 
@@ -76,7 +75,7 @@ class SantoriniGame:
         elif command == "redo":
             # Similarly
             self._caretaker.redo()
-            self._restore_state() 
+            self._restore_state()
             return True
         elif command == "next":
             # Update the Caretaker Mementos
@@ -85,7 +84,7 @@ class SantoriniGame:
             return False
         else:
             raise ValueError
-        
+
     def restart(self):
         (white, blue, undo_redo, score_display) = self._args
         self.__init__(white, blue, undo_redo, score_display)
@@ -95,7 +94,7 @@ class SantoriniGame:
         """Infinite turn loop."""
         while True:
             # Initially pass to the board (printing) last updated state
-            self._board._update_state(self._generate_state()) 
+            self._board._update_state(self._generate_state())
 
             self.print_turn()
 
@@ -125,7 +124,7 @@ class SantoriniGame:
 
                 # Since we first want to check if lost, then memento updates
                 # So there should be generated new possibilities on the new state
-                self._current.update_possibilities(self._current.color)
+                self._current.update_possibilities()
 
             try:
                 # Ask for the direction strategies
@@ -136,14 +135,14 @@ class SantoriniGame:
                 symbol, move, build = self._execute_command()
             except Win:
                 self.won()
-            
+
             print(f"{symbol},{move},{build}", end="")
 
             # Scores After the Move is Executed
             if self._score_display == "on":
-                self._board._update_state(self._generate_state()) 
+                self._board._update_state(self._generate_state())
                 positions = [worker.position for worker in self.current.workers]
-                score = self._board.score(positions, self._current.color) 
+                score = self._board.score(positions, self._current.color)
                 s_cli.print_score(score[0], score[1], score[2])
 
             print(end="\n")

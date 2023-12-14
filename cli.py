@@ -4,7 +4,7 @@
 # Factory Method (args passed: human/computer)     -     DONE
 
 import sys
-from exceptions import DirectionError
+from exceptions import DirectionError, WorkerError
 
 
 class SantoriniCLI:
@@ -12,19 +12,27 @@ class SantoriniCLI:
 
     def select_worker(self):
         """Prompts the user to select a worker and returns the input."""
-
-        return input("Select a worker to move\n")
+        while True:
+            try:
+                worker = input("Select a worker to move\n")
+                valid_workers = ("A", "B", "C", "D")
+                if worker not in valid_workers:
+                    raise WorkerError("Not a valid worker")
+            except WorkerError as e:
+                self.print_worker_error(e.mes)
+            else:
+                return worker
 
     def get_direction(self, prompt):
         """
-        Prompts the user to input a direction and validates it. 
+        Prompts the user to input a direction and validates it.
         Returns the validated direction.
         """
 
         while True:
             try:
                 direction = input(prompt)
-                valid_directions = ["n", "ne", "e", "se", "s", "sw", "w", "nw"]
+                valid_directions = ("n", "ne", "e", "se", "s", "sw", "w", "nw")
                 if direction not in valid_directions:
                     raise DirectionError(f"Not a valid direction")
             except DirectionError as e:
@@ -43,9 +51,6 @@ class SantoriniCLI:
     def get_build(self):
         prompt = "Select a direction to build (n, ne, e, se, s, sw, w, nw)\n"
         return self.get_direction(prompt)
-
-    def print_selection(self):
-        raise NotImplementedError()
 
     def print_board(self, board):
         print(board)
@@ -71,7 +76,9 @@ class SantoriniCLI:
         else:
             restart()
 
+
 s_cli = SantoriniCLI()
+
 
 def parse_args():
     """
@@ -81,7 +88,7 @@ def parse_args():
         dict: A dictionary containing configuration options for white player type, blue player type,
               undo/redo enablement, and score display enablement.
     """
-    
+
     args = sys.argv[1:]
 
     white_player_type = (

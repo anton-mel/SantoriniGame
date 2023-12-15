@@ -10,7 +10,7 @@ Santorini Board Game is the final test of **"Object Oriented Programming (CPSC 3
 **Teacher: Timothy Barron**
 
 ## Project specification
-The project consists of a OOP Python version of the board game *Santorini*, made by Roxley Games. It implement 5 patterns: Factory method, Template Method, Memento Pattern, Iterators, and Singleton Pattern. The uniqueness lies in the ability to play with AI/Random/Human players and to Undo/Redo moves as necessary.
+The project consists of a OOP Python version of the board game *Santorini*, made by Roxley Games. It implement 5 patterns: Factory method, Template Method, Memento Pattern, Iterators, and Singleton Pattern. The uniqueness lies in the ability to play with AI/Random/Human players and to Undo/Redo.
 
 You can find the full game [here](https://roxley.com/products/santorini).
 

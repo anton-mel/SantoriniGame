@@ -21,7 +21,7 @@ class Strategy:
         self._board = board
         self._p = {}
         self._color = player_type
-        self._w_symbols = (worker.symbol for worker in workers)
+        self._w_symbols = [worker.symbol for worker in workers]
 
         self._selected_worker = None
         self._selected_move = None
@@ -120,6 +120,7 @@ class HumanStrategy(Strategy):
 
     def _get_worker(self):
         while True:
+
             try:
                 symbol = s_cli.select_worker()
 

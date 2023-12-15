@@ -1,7 +1,7 @@
 # Santorini Board Game
 [![License: MIT][license-image]][license]
-[![Last Commit - Feb 2023](https://img.shields.io/badge/Last_Commit-Feb_2023-2ea44f)](https://)
-[![Released - Feb 2023](https://img.shields.io/badge/Released-Feb_2023-ff0000)](https://)
+[![Last Commit - Feb 2023](https://img.shields.io/badge/Last_Commit-Feb_2023-D22B2B)](https://)
+[![Released - Feb 2023](https://img.shields.io/badge/Released-Feb_2023-D22B2B)](https://)
 
 <img src="https://images-na.ssl-images-amazon.com/images/I/91irtho0CNL._AC_SL1500_.jpg" width=192px height=192 px align="right" />
 

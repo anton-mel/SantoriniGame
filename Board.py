@@ -1,4 +1,3 @@
-import math
 from exceptions import MoveError, Win
 
 
@@ -91,26 +90,6 @@ class Board:
         
         cell = self._grid.get_cell(position)
         cell.upgrade()
-
-    def score(self, workers_positions, color):
-        """Calculates the score (cell score, heuristic position score, distance score)."""
-        total_distance = self._score.total_distance_score(color)
-        curr_cell_score = self._score.total_cell_score(workers_positions)
-        curr_pos_score = self._score.height_score(workers_positions)
-
-        return (curr_cell_score, curr_pos_score, total_distance)
-
-    def check_score(self, symbol, color, new_positions):
-        """Check score by moving worker to calculate heuristic optimal moves."""
-        workers_positions = self._state.get_workers_pos_by_symbol(symbol)
-        curr_worker = self._state.get_worker_by_symbol(symbol)
-        previous_position = curr_worker.position
-        curr_worker.position = new_positions
-
-        try:
-            return self._score.score(workers_positions, color)
-        finally:
-            curr_worker.position = previous_position
 
     def score(self, workers_positions, color):
         """Calculates the score (cell score, heuristic position score, distance score)."""

@@ -1,6 +1,8 @@
+# Anton Melnychuk & Oliver Li
+
 import copy
 from Board import Board
-from cli import s_cli, parse_args  # ?
+from cli import s_cli, parse_args
 from Player import PlayerFactory
 from exceptions import Loss, Win
 from Memento import Originator, Caretaker, GameState

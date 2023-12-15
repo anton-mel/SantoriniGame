@@ -1,7 +1,4 @@
-# Memento Pattern (For Command History)            -     DONE
-# Template Pattern!                                -     DONE
-# Singleton Pattern                                -     DONE
-# Factory Method (args passed: human/computer)     -     DONE
+# Anton Melnychuk & Oliver Li
 
 import sys
 from exceptions import DirectionError, WorkerError
@@ -15,7 +12,7 @@ class SantoriniCLI:
         while True:
             try:
                 worker = input("Select a worker to move\n")
-                valid_workers = ("A", "B", "C", "D")
+                valid_workers = ["A", "B", "Y", "Z"]
                 if worker not in valid_workers:
                     raise WorkerError("Not a valid worker")
             except WorkerError as e:

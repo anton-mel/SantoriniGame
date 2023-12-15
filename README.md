@@ -41,7 +41,7 @@ The final version includes:
 | Undo/Redo Function | [✅] |
 
 #### Legend
-[⛔] Not Implemented &nbsp;&nbsp;&nbsp;&nbsp;[⚠️]() Implementing&nbsp;&nbsp;&nbsp;&nbsp;[✅] Implemented
+⛔ Not Implemented &nbsp;&nbsp;&nbsp;&nbsp;⚠️ Implementing&nbsp;&nbsp;&nbsp;&nbsp;✅ Implemented
 
 
 [license]: https://github.com/S0NN1/ing-sw-2020-piemonti-pirovano-sonnino/blob/master/LICENSE

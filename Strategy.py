@@ -1,5 +1,5 @@
 from cli import s_cli
-from exceptions import WorkerError, MoveError
+from exceptions import WorkerError, MoveError, Loss
 from DirectionUtils import DirectionUtils
 import random
 
@@ -17,9 +17,11 @@ class Strategy:
         _build_direction (str): The direction of the selected build.
     """
 
-    def __init__(self, board):
+    def __init__(self, board, workers, player_type):
         self._board = board
         self._p = {}
+        self._color = player_type
+        self._w_symbols = (worker.symbol for worker in workers)
 
         self._selected_worker = None
         self._selected_move = None
@@ -44,7 +46,7 @@ class Strategy:
 
     def update_possibilities(self, workers):
         """Updates possible moves and builds for each worker on the board."""
-        
+
         self._p.clear()
 
         for worker in workers:
@@ -79,7 +81,8 @@ class Strategy:
 
                     self._p[worker][move].add(build)
 
-        print(self._p)
+        if len(self._p) == 0:
+            raise Loss
 
     def _execute_steps(self):
         self._move(self._selected_move, self._selected_worker)
@@ -110,7 +113,7 @@ class HumanStrategy(Strategy):
     Subclass of Strategy representing a human-controlled strategy.
 
     Methods:
-        execute(self): 
+        execute(self):
             Executes the entire human strategy, including worker selection, move selection, and building.
             Returns a tuple containing worker symbol, move direction, and build direction.
     """
@@ -120,25 +123,12 @@ class HumanStrategy(Strategy):
             try:
                 symbol = s_cli.select_worker()
 
-                for w in self._board.state.white_workers:
-                    if w.symbol == symbol:
-                        worker = w
-
-                for w in self._board.state.white_workers:
-                    if w.symbol == symbol:
-                        worker = w
-
-                white_workers_symbols = [worker.symbol for worker in self._board.state.white_workers]
-                blue_workers_symbols = [worker.symbol for worker in self._board.state.blue_workers]
-
-                symbol_in_state = (symbol in white_workers_symbols) or (symbol in blue_workers_symbols)
-                worker_is_none = (not worker)
-
-                if symbol_in_state and worker_is_none:
+                if symbol not in self._w_symbols:
                     raise WorkerError("That is not your worker")
 
-                if not worker:
-                    raise WorkerError("Not a valid worker")
+                for w in self._p.keys():
+                    if w.symbol == symbol:
+                        worker = w
 
                 if worker not in self._p:
                     raise WorkerError("That worker cannot move")
@@ -176,7 +166,7 @@ class HumanStrategy(Strategy):
                 if build not in self._p[self._selected_worker][self._selected_move]:
                     raise MoveError("build", build_direction)
 
-            except MoveError as e: 
+            except MoveError as e:
                 s_cli.print_invalid_move(e)
             else:
                 self._selected_build = build
@@ -189,7 +179,7 @@ class HeuristicStrategy(Strategy):
     Subclass of Strategy representing a heuristic-based strategy.
 
     Methods:
-        execute(self): 
+        execute(self):
             Executes the entire heuristic strategy, including worker selection, move selection, and building.
             Returns a tuple containing worker symbol, move direction, and build direction.
     """
@@ -201,7 +191,7 @@ class HeuristicStrategy(Strategy):
             for move in self._p[worker]:
                 (height, center, distance) = self._board.check_score(
                     worker.symbol,
-                    self.color,
+                    self._color,
                     move,
                 )
 
@@ -231,11 +221,11 @@ class RandomStrategy(Strategy):
     Subclass of Strategy representing a random strategy.
 
     Methods:
-        execute(self): 
+        execute(self):
             Executes the entire random strategy, including worker selection, move selection, and building.
             Returns a tuple containing worker symbol, move direction, and build direction.
     """
-        
+
     def _get_worker(self):
         self._selected_worker = random.choice(list(self._p.keys()))
 

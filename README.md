@@ -19,7 +19,7 @@ The final version includes:
 * source code of the implementation;
 * source code of unity tests.
 
-![SantoriniGame Poster]([https://cdn.shopify.com/s/files/1/0246/2190/8043/t/5/assets/6c48f2d1ca16--santorini-render-0006-Santorini-BeautyRenderCompiler-HR0010-32bf68_700x.jpg?v=1682644931](https://ksr-ugc.imgix.net/assets/012/375/156/3acfc190f850cb2d2141687468a2c7e1_original.jpg?ixlib=rb-4.1.0&crop=faces&w=1552&h=873&fit=crop&v=1463757728&auto=format&frame=1&q=92&s=ba6f058da88857a6dcb8b58ff3edddfd))
+![SantoriniGame Poster](https://ksr-ugc.imgix.net/assets/012/375/156/3acfc190f850cb2d2141687468a2c7e1_original.jpg?ixlib=rb-4.1.0&crop=faces&w=1552&h=873&fit=crop&v=1463757728&auto=format&frame=1&q=92&s=ba6f058da88857a6dcb8b58ff3edddfd)
 
 ## Final UML
 ![SantoriniGame UML Diagram with Implemented Patterns](./UML/SantoriniUML.jpg)

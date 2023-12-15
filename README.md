@@ -41,7 +41,7 @@ The final version includes:
 
 ## The Team
 * [Anton Melnychuk](https://github.com/anton-mel)
-* [Oliver Li](https://github.com/PiroX4256)
+* [Oliver Li](https://github.com/revilobug)
 
 [license]: https://github.com/S0NN1/ing-sw-2020-piemonti-pirovano-sonnino/blob/master/LICENSE
 [license-image]: https://img.shields.io/badge/License-MIT-blue.svg

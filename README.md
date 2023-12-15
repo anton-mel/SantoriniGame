@@ -19,7 +19,11 @@ The final version includes:
 * source code of the implementation;
 * source code of unity tests.
 
-</br>
+## The Team
+* [Anton Melnychuk](https://github.com/anton-mel)
+* [Oliver Li](https://github.com/revilobug)
+
+</br></br>
 
 ![SantoriniGame Poster](https://ksr-ugc.imgix.net/assets/012/375/156/3acfc190f850cb2d2141687468a2c7e1_original.jpg?ixlib=rb-4.1.0&crop=faces&w=1552&h=873&fit=crop&v=1463757728&auto=format&frame=1&q=92&s=ba6f058da88857a6dcb8b58ff3edddfd)
 
@@ -41,9 +45,6 @@ The final version includes:
 #### Legend
 [⛔]() Not Implemented &nbsp;&nbsp;&nbsp;&nbsp;[⚠️]() Implementing&nbsp;&nbsp;&nbsp;&nbsp;[✅]() Implemented
 
-## The Team
-* [Anton Melnychuk](https://github.com/anton-mel)
-* [Oliver Li](https://github.com/revilobug)
 
 [license]: https://github.com/S0NN1/ing-sw-2020-piemonti-pirovano-sonnino/blob/master/LICENSE
 [license-image]: https://img.shields.io/badge/License-MIT-blue.svg

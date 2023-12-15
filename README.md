@@ -18,9 +18,8 @@ The final version includes:
 * UML diagram;
 * source code of the implementation;
 * source code of unity tests.
-## Find out more
 
-## Code UML
+## Final UML
 ![SantoriniGame UML Diagram with Implemented Patterns](./UML/SantoriniUML.jpg)
 
 ## Implemented Functionalities

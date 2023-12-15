@@ -1,6 +1,6 @@
 # Santorini Board Game
 [![License: MIT][license-image]][license]
-![latest commit](https://img.shields.io/github/last_commit-Feb_2023/ing-sw-2022-piemonti-pirovano-sonnino?color=red)
+[![Last Commit - Feb 2023](https://img.shields.io/badge/Last_Commit-Feb_2023-2ea44f)](https://)
 ![latest release](https://img.shields.io/github/v/release-Feb_2023/ing-sw-2020-piemonti-pirovano-sonnino?color=green)
 
 <img src="https://images-na.ssl-images-amazon.com/images/I/91irtho0CNL._AC_SL1500_.jpg" width=192px height=192 px align="right" />

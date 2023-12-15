@@ -19,6 +19,8 @@ The final version includes:
 * source code of the implementation;
 * source code of unity tests.
 
+![](https://cdn.shopify.com/s/files/1/0246/2190/8043/t/5/assets/6c48f2d1ca16--santorini-render-0006-Santorini-BeautyRenderCompiler-HR0010-32bf68_700x.jpg?v=1682644931)
+
 ## Final UML
 ![SantoriniGame UML Diagram with Implemented Patterns](./UML/SantoriniUML.jpg)
 

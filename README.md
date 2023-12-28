@@ -27,6 +27,8 @@ The final version includes:
 
 ![[GUIVideoPreview](./GUIPreview.gif)](./GUIPreview.gif)
 
+![SantoriniGame UML Diagram with Implemented Patterns](./UML/SantoriniUML.jpg)
+
 ## Implemented Functionalities
 | Functionality | Status |
 |:-----------------------|:------------------------------------:|
@@ -39,12 +41,6 @@ The final version includes:
 | Multiple games | [✅] |
 | Persistence | [⛔] |
 | Undo/Redo Function | [✅] |
-
-
-<div style="display: flex; justify-content: flex-end;">
-  <img src="./UML/SantoriniUML.jpg" alt="Santorini UML Diagram" width="320" height="240">
-</div>
-
 
 #### Legend
 ⛔ Not Implemented &nbsp;&nbsp;&nbsp;&nbsp;⚠️ Implementing&nbsp;&nbsp;&nbsp;&nbsp;✅ Implemented

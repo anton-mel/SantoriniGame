@@ -3,13 +3,12 @@
 [![Last Commit - Feb 2023](https://img.shields.io/badge/Last_Commit-Feb_2023-D22B2B)](https://)
 [![Released - Feb 2023](https://img.shields.io/badge/Released-Feb_2023-D22B2B)](https://)
 
-<img src="https://images-na.ssl-images-amazon.com/images/I/91irtho0CNL._AC_SL1500_.jpg" width=192px height="192px" align="right" />
+![SantoriniGame UML Diagram with Implemented Patterns](./UML/SantoriniUML.jpg)
+<!-- <img src="https://images-na.ssl-images-amazon.com/images/I/91irtho0CNL._AC_SL1500_.jpg" width=192px height="192px" align="right" /> -->
 
 Santorini Board Game is the final test of **"Object Oriented Programming (CPSC 327)"**, course of **"Yale University"** held at Timothy Barron (2022).
 
 **Teacher: Timothy Barron**
-
-![SantoriniGame UML Diagram with Implemented Patterns](./UML/SantoriniUML.jpg)
 
 ## Project specification
 The project consists of a OOP Python version of the board game *Santorini*, made by Roxley Games. It implement 5 patterns: Factory method, Template Method, Memento Pattern, Iterators, and Singleton Pattern. The uniqueness lies in the ability to play with AI/Random/Human players and to Undo/Redo.

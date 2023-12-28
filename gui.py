@@ -1,6 +1,7 @@
 # Anton Melnychuk & Oliver Li
 
 import copy
+import tkinter as tk
 from Board import Board
 from cli import s_cli, parse_args
 from Player import PlayerFactory
@@ -10,8 +11,11 @@ from Memento import Originator, Caretaker, GameState
 
 class SantoriniGame:
     """Class representing the Santorini game."""
+    
+    def __init__(self, root, white, blue, undo_redo, score_display):
+        self.root = root
+        self.root.resizable(False, False)
 
-    def __init__(self, white, blue, undo_redo, score_display):
         self._board = Board()
         self._args = (white, blue, undo_redo, score_display)
 
@@ -30,21 +34,24 @@ class SantoriniGame:
         # Save default positions
         self._originator.restore(self._generate_state())
         self._caretaker.backup()
+        
+        # Define GUI
+        self.root = root
+        self.root.title("SantoriniGame")
+        
 
     def print_turn(self):
-        board_frame = s_cli.print_board(self._board)
-        board_frame.pack_forget() 
-        board_frame.pack()
-        
+        s_cli.print_board(self._board, self.root)
         s_cli.print_turn(
             self._turn,
             str(self._current),
             self._current.worker_string(),
+            self.root
         )
 
     def won(self):
         self._next()
-        s_cli.print_end(self.restart, self._current.color)
+        s_cli.print_end(self.restart, self._current.color, root)
 
     def copy_turn(self):
         return copy.copy(self._turn)
@@ -70,7 +77,7 @@ class SantoriniGame:
         self._board.grid = state.get_grid()
 
     def memento_display(self):
-        command = s_cli.get_memento()
+        command = s_cli.get_memento(self.root)
 
         if command == "undo":
             # Undo the current state and move to the next
@@ -91,7 +98,6 @@ class SantoriniGame:
             raise ValueError
 
     def restart(self):
-        self.root.destroy()
         (white, blue, undo_redo, score_display) = self._args
         self.__init__(white, blue, undo_redo, score_display)
         self.run()
@@ -106,11 +112,9 @@ class SantoriniGame:
 
             # Scores Before the Move is Executed
             if self._score_display == "on":
-                print(",", end="")
                 positions = [worker.position for worker in self.current.workers]
                 score = self._board.score(positions, self._current.color)
-                s_cli.print_score(score[0], score[1], score[2], )
-            print(end="\n")
+                s_cli.print_score(score[0], score[1], score[2], self.root)
 
             try:
                 # Update possibilities & check if lost
@@ -142,16 +146,15 @@ class SantoriniGame:
             except Win:
                 self.won()
 
-            print(f"{symbol},{move},{build}", end="")
+            s_cli.last(symbol, move, build, self.root)
 
             # Scores After the Move is Executed
             if self._score_display == "on":
                 self._board._update_state(self._generate_state())
                 positions = [worker.position for worker in self.current.workers]
                 score = self._board.score(positions, self._current.color)
-                s_cli.print_score(score[0], score[1], score[2])
+                s_cli.print_score(score[0], score[1], score[2], self.root)
 
-            print(end="\n")
             self._next()
 
     def _next(self):
@@ -161,7 +164,7 @@ class SantoriniGame:
     # Memento Pattern
     def _execute_command(self):
         return self._current.execute()
-
+    
     @property
     def current(self):
         return self._current
@@ -169,5 +172,8 @@ class SantoriniGame:
 
 if __name__ == "__main__":
     args = parse_args()
-    santorini_game = SantoriniGame(**args)
+
+    root = tk.Tk()
+    santorini_game = SantoriniGame(root, **args)
     santorini_game.run()
+    root.mainloop()

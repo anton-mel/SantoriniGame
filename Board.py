@@ -1,5 +1,5 @@
 from exceptions import MoveError, Win
-
+import tkinter as tk
 
 class GridIterator:
     """Custom Iterator for iterating over the rows of a grid."""
@@ -118,18 +118,42 @@ class Board:
     def __getitem__(self, key):
         return self._grid[key]
 
-    def __repr__(self):
-        output = ""
+    def __repr__(self, root):
+        if not hasattr(self, "_frame"):
+            self._frame = tk.Frame(root)
+            self._frame.pack()
+
+            # Create a separate Canvas for the game board
+            self._canvas = tk.Canvas(self._frame, width=Board.SIZE * 60, height=Board.SIZE * 60)
+            self._canvas.config(bg="white")
+            self._canvas.grid(row=0, column=0)
+
         for i, row in enumerate(self):
-            output += "+--" * Board.SIZE + "+\n"
-            row_result = ""
             for j, cell in enumerate(row):
-                height = cell.level
-                worker_symbol = self.occupied((i, j))
-                row_result += f"|{height}" + (worker_symbol if worker_symbol else " ")
-            output += row_result + "|\n"
-        output += "+--" * Board.SIZE + "+"
-        return output
+                x1, y1 = j * 60, i * 60
+                x2, y2 = x1 + 60, y1 + 60
+
+                # Map level to color
+                level_to_color = {0: "white", 1: "yellow", 2: "orange", 3: "red", 4: "blue"}
+                fill_color = level_to_color.get(cell.level, "white")
+
+                self._canvas.create_rectangle(x1, y1, x2, y2, fill=fill_color, outline="black")
+                label_text = f"Level: {cell.level}"
+
+                def on_click(event, position=(i, j)):
+                    print(f"Clicked on position: {position}")
+                    # Add your logic for handling the click event here
+
+                # Get the worker symbol from self._state and display it
+                worker_symbol = self._state.get_worker_by_position((i, j))
+                worker_symbol = worker_symbol.symbol if worker_symbol else ""
+
+                # Adjust the y-coordinate for the worker symbol text to add margin top
+                margin_top = 20
+                self._canvas.create_text((x1 + x2) // 2, (y1 + y2) // 2 - margin_top, text=label_text, anchor="center", fill="black")
+                self._canvas.create_text((x1 + x2) // 2, (y1 + y2) // 2, text=worker_symbol, anchor="nw", fill="black")
+
+        return self._frame
 
     @property
     def grid(self):

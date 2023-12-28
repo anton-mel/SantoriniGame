@@ -40,24 +40,11 @@ The final version includes:
 | Persistence | [⛔] |
 | Undo/Redo Function | [✅] |
 
-## Implemented Functionalities
-| Functionality | Status |
-|:-----------------------|:------------------------------------:|
-| Basic rules | [✅] |
-| Complete rules | [✅] |
-| Socket | [✅] |
-| GUI | [⚠️] |
-| CLI | [✅] |
-| Heuristic/Random/Human | [✅] |
-| Multiple games | [✅] |
-| Persistence | [⛔] |
-| Undo/Redo Function | [✅] |
 
-<div style="float: right; margin-left: 20px;">
-  <img src="./path/to/your/photo.jpg" alt="Photo Description" width="320" height="240">
+<div style="display: flex; justify-content: flex-end;">
+  <img src="./UML/SantoriniUML.jpg" alt="Santorini UML Diagram" width="320" height="240">
 </div>
 
-![SantoriniGame UML Diagram with Implemented Patterns](./UML/SantoriniUML.jpg)
 
 #### Legend
 ⛔ Not Implemented &nbsp;&nbsp;&nbsp;&nbsp;⚠️ Implementing&nbsp;&nbsp;&nbsp;&nbsp;✅ Implemented

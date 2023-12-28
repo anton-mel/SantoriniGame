@@ -5,6 +5,8 @@
 
 <img src="https://images-na.ssl-images-amazon.com/images/I/91irtho0CNL._AC_SL1500_.jpg" width=192px height=192 px align="right" />
 
+[![GUIVideoPreview](./GUIPreview.mp4)](./GUIPreview.mp4)
+
 Santorini Board Game is the final test of **"Object Oriented Programming (CPSC 327)"**, course of **"Yale University"** held at Timothy Barron (2022).
 
 **Teacher: Timothy Barron**

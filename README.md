@@ -25,7 +25,7 @@ The final version includes:
 
 ![SantoriniGame Poster](https://ksr-ugc.imgix.net/assets/012/375/156/3acfc190f850cb2d2141687468a2c7e1_original.jpg?ixlib=rb-4.1.0&crop=faces&w=1552&h=873&fit=crop&v=1463757728&auto=format&frame=1&q=92&s=ba6f058da88857a6dcb8b58ff3edddfd)
 
-![[GUIVideoPreview](./GUIPreview.gif)](./GUIPreview.gif)
+<img src="./GUIPreview.gif" alt="GUI Video Preview" width="200" height="150">
 
 ![SantoriniGame UML Diagram with Implemented Patterns](./UML/SantoriniUML.jpg)
 

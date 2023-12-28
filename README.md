@@ -1,7 +1,7 @@
 # Santorini Board Game
 
-<img src="./GIFPreview.gif" alt="GUI Video Preview" width="224" height="165" align="right" />
-<img src="https://images-na.ssl-images-amazon.com/images/I/91irtho0CNL._AC_SL1500_.jpg" width=165px height="165px" align="right" />
+<img src="./GIFPreview.gif" alt="GUI Video Preview" width="224" height="192" align="right" />
+<img src="https://images-na.ssl-images-amazon.com/images/I/91irtho0CNL._AC_SL1500_.jpg" width=192px height="192px" align="right" />
 
 [![License: MIT][license-image]][license]
 [![Last Commit - Feb 2023](https://img.shields.io/badge/Last_Commit-Feb_2023-D22B2B)](https://)

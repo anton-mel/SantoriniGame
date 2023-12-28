@@ -5,8 +5,6 @@
 
 <img src="https://images-na.ssl-images-amazon.com/images/I/91irtho0CNL._AC_SL1500_.jpg" width=192px height=192 px align="right" />
 
-[![GUIVideoPreview](./GUIPreview.gif)](./GUIPreview.gif)
-
 Santorini Board Game is the final test of **"Object Oriented Programming (CPSC 327)"**, course of **"Yale University"** held at Timothy Barron (2022).
 
 **Teacher: Timothy Barron**
@@ -28,6 +26,8 @@ The final version includes:
 ![SantoriniGame Poster](https://ksr-ugc.imgix.net/assets/012/375/156/3acfc190f850cb2d2141687468a2c7e1_original.jpg?ixlib=rb-4.1.0&crop=faces&w=1552&h=873&fit=crop&v=1463757728&auto=format&frame=1&q=92&s=ba6f058da88857a6dcb8b58ff3edddfd)
 
 ![SantoriniGame UML Diagram with Implemented Patterns](./UML/SantoriniUML.jpg)
+
+![[GUIVideoPreview](./GUIPreview.gif)](./GUIPreview.gif)
 
 ## Implemented Functionalities
 | Functionality | Status |

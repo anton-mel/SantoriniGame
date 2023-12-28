@@ -1,6 +1,6 @@
 # Santorini Board Game
 
-<img src="./GIFPreview.gif" alt="GUI Video Preview" width="240" height="200" align="right" />
+<img src="./GIFPreview.gif" alt="GUI Video Preview" width="250" height="200" align="right" />
 <img src="https://images-na.ssl-images-amazon.com/images/I/91irtho0CNL._AC_SL1500_.jpg" width=200px height="200px" align="right" />
 
 [![License: MIT][license-image]][license]

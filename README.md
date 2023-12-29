@@ -32,6 +32,8 @@ The final version includes:
 ## Final UML Scheme
 ![SantoriniGame UML Diagram with Implemented Patterns](./UML/SantoriniUML.jpg)
 
+For a detailed explanation of the implemented diagram patterns follow the link: [UMLReview](./Anton&Oliver.pdf).
+
 ## Implemented Functionalities
 | Functionality | Status |
 |:-----------------------|:------------------------------------:|

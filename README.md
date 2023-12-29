@@ -30,7 +30,7 @@ The final version includes:
 
 
 ## Final UML Scheme
-For a detailed explanation of the implemented diagram follow the link: [UMLReview](./Anton&Oliver.pdf).<br/>
+For a detailed explanation of the implemented diagram consider the [UMLReview](./Anton&Oliver.pdf).<br/>
 
 ![SantoriniGame UML Diagram with Implemented Patterns](./UML/SantoriniUML.jpg)
 

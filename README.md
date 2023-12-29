@@ -34,7 +34,7 @@ The final version includes:
 
 ## Implemented Functionalities
 | Functionality | Status |
-|:-----------------------:|:------------------------------------:|
+|:-----------------------|:------------------------------------:|
 | Basic rules | [✅] |
 | Complete rules | [✅] |
 | Socket |[✅] |

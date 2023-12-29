@@ -30,7 +30,7 @@ The final version includes:
 
 ---
 
-**Final UML Scheme**
+## Final UML Scheme
 
 ![SantoriniGame UML Diagram with Implemented Patterns](./UML/SantoriniUML.jpg)
 

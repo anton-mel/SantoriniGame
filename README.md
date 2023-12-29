@@ -7,7 +7,7 @@
 [![Last Commit - Feb 2023](https://img.shields.io/badge/Last_Commit-Feb_2023-D22B2B)](https://)
 [![Released - Feb 2023](https://img.shields.io/badge/Released-Feb_2023-D22B2B)](https://)
 
-Santorini Board Game is the final test of **"Object Oriented Programming (CPSC 327)"**, course of **Yale University** held by Timothy Barron 2022.
+Santorini Board Game is the final test of **"Object Oriented Programming (CPSC 327)"**, course of **Yale University** held by Timothy Barron (2022).
 
 **Teacher: Timothy Barron**
 

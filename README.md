@@ -18,7 +18,7 @@ You can find the full game [here](https://roxley.com/products/santorini).
 
 The final version includes:
 * UML diagram;
-* source code of the implementation;
+* source code of the CLI/GUI implementation;
 * source code of unity tests.
 
 

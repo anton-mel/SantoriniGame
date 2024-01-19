@@ -4,8 +4,8 @@
 <img src="https://images-na.ssl-images-amazon.com/images/I/91irtho0CNL._AC_SL1500_.jpg" width=200px height="200px" align="right" />
 
 [![License: MIT][license-image]][license]
-[![Last Commit - Feb 2023](https://img.shields.io/badge/Last_Commit-Feb_2023-D22B2B)](https://)
-[![Released - Feb 2023](https://img.shields.io/badge/Released-Feb_2023-D22B2B)](https://)
+[![Last Commit - Feb 2023](https://img.shields.io/badge/Last_Commit-Feb_2024-D22B2B)](https://)
+[![Released - Feb 2023](https://img.shields.io/badge/Released-Feb_2024-D22B2B)](https://)
 
 Santorini Board Game is the final test of **"Object Oriented Programming (CPSC 327)"**, course of **Yale University** held by Timothy Barron (2022).
 

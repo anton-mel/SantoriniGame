@@ -35,23 +35,6 @@ For a detailed explanation of the implemented diagram, consider the [UMLReview](
 ![SantoriniGame UML Diagram with Implemented Patterns](./UML/SantoriniUML.jpg)
 
 
-## Implemented Functionalities
-| Functionality | Status |
-|:-----------------------|:------------------------------------:|
-| Basic rules | [✅] |
-| Complete rules | [✅] |
-| Socket |[✅] |
-| GUI | [⚠️] |
-| CLI |[✅] |
-| Heuristic/Random/Human | [✅] |
-| Multiple games | [✅] |
-| Persistence | [⛔] |
-| Undo/Redo Function | [✅] |
-
-#### Legend
-⛔ Not Implemented &nbsp;&nbsp;&nbsp;&nbsp;⚠️ Implementing&nbsp;&nbsp;&nbsp;&nbsp;✅ Implemented
-
-
 [license]: https://github.com/S0NN1/ing-sw-2020-piemonti-pirovano-sonnino/blob/master/LICENSE
 [license-image]: https://img.shields.io/badge/License-MIT-blue.svg
 [javadocs]: https://s0nn1.github.io/santorini-javadocs/

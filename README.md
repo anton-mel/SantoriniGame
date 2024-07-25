@@ -32,7 +32,7 @@ The final version includes:
 ## Final UML Scheme
 For a detailed explanation of the implemented diagram, consider the [UMLReview](./Anton&Oliver.pdf). Note that the project has been slightly changed since and the primitive GUI implementation has been added.<br/>
 
-![SantoriniGame UML Diagram with Implemented Patterns](./UML/SantoriniUML.jpg)
+![SantoriniGame UML Diagram with Implemented Patterns](./UMLDesign/SantoriniUML.jpg)
 
 
 [license]: https://github.com/S0NN1/ing-sw-2020-piemonti-pirovano-sonnino/blob/master/LICENSE

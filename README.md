@@ -1,6 +1,6 @@
 # Santorini Board Game
 
-<img src="https://images-na.ssl-images-amazon.com/images/I/91irtho0CNL._AC_SL1500_.jpg" width=200px height="200px" align="right" />
+<img src="https://images-na.ssl-images-amazon.com/images/I/91irtho0CNL._AC_SL1500_.jpg" width=180px height="180px" align="right" />
 
 [![License: MIT][license-image]][license]
 [![Last Commit - Feb 2023](https://img.shields.io/badge/Last_Commit-Feb_2024-D22B2B)](https://)
